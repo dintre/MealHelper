@@ -20,6 +20,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
@@ -89,6 +90,13 @@ public class FoodBuildUI extends Application {
 	    foodLabel.setPadding(new Insets(10));
 	    foodLabel.setFont(Font.font("Cambria", 24));
 	    
+	    ObservableList food = FXCollections.observableArrayList();
+	    food.addAll("Blueberries", "Flour", "Sugar", "Chicken Breast", "Maple Syrup", "Bacon", "Spaghetti Noodles", "Tomato Sauce", "Peanut Butter", "Raspberry Jelly", "Whole Wheat Bread",
+	    		"Lettuce", "Button Mushrooms", "Egg");
+	    final ListView foodView = new ListView(food);
+	    foodView.setPrefSize(200, 200);
+	    foodView.setEditable(true);
+	    
 	    // search field by name
 	    TextField foodNameSearch = new TextField();
 	    foodNameSearch.setPromptText("Search by name...");
@@ -107,7 +115,7 @@ public class FoodBuildUI extends Application {
 	    
 	    
 	    // add all foodBox (left pane) components
-	    foodBox.getChildren().addAll(foodLabel, foodNameSearch, nutrientSearch, runSearchQuery, addFood);
+	    foodBox.getChildren().addAll(foodLabel, foodView, foodNameSearch, nutrientSearch, runSearchQuery, addFood);
 	    
 	    
 	    
@@ -120,6 +128,12 @@ public class FoodBuildUI extends Application {
 	    mealLabel.setText("Meals");
 	    mealLabel.setPadding(new Insets(10));
 	    mealLabel.setFont(Font.font("Cambria", 24));
+	    ObservableList meals = FXCollections.observableArrayList();
+	    meals.addAll("Blueberry Pancakes", "Chicken and Waffles", "Spaghetti and Meatballs", "PBJ", "Shahi Paneer", "Burger and Fries", "Biscuits and Gravy", "Pepperoni Pizza",
+	    		"Rice and Beans", "Steak with Mushrooms", "Wedge Salad", "Barbecue Ribs", "Shrimp and Grits");
+	    final ListView mealView = new ListView(meals);
+	    mealView.setPrefSize(200, 200);
+	    mealView.setEditable(true);
 
 	    
 	    // analyze meal button
@@ -132,12 +146,12 @@ public class FoodBuildUI extends Application {
 	    analysisResults.setText("Meal Analysis Results:");
 	    
 	    
-	    mealBox.getChildren().addAll(mealLabel, analyzeMeal, analysisResults);
+	    mealBox.getChildren().addAll(mealLabel, mealView, analyzeMeal, analysisResults);
 	    
 	    
 	    // bottom section - exit button
 	    HBox bottomMenu = new HBox();
-	    bottomMenu.setPadding(new Insets (20, 20, 20, 1000) );
+	    bottomMenu.setPadding(new Insets (0) );
 	    bottomMenu.setSpacing(10);
 	    bottomMenu.setStyle("-fx-background-color: #336699;");
 	    Button exitButton = new Button("Exit");
@@ -151,6 +165,7 @@ public class FoodBuildUI extends Application {
 		border.setLeft(foodBox);
 		border.setRight(mealBox);
 		border.setBottom(bottomMenu);
+		//border.setCenter(listView);
 	    
 		
 		
