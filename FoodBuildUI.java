@@ -60,14 +60,15 @@ public class FoodBuildUI extends Application {
 		
 		// create sections
 		
-		// top section
+		// top section  --------------------------------------------------------------------------------------------------------------
 		VBox headingbox = new VBox();
 	    headingbox.setPadding(new Insets(20, 100, 20, 100));
 	    headingbox.setSpacing(10);
-	    headingbox.setStyle("-fx-background-color: #336699;");
+	    headingbox.setStyle("-fx-background-color: #4527A0;");
 	    // set label for title of the program
 	    Label programTitle = new Label();
 	    programTitle.setText("Meal Helper"); 
+	    programTitle.setTextFill(Color.web("#FAFAFA"));
 	    programTitle.setFont(Font.font("Cambria", 32));
 	    
 	    Button importButton = new Button("Import");
@@ -78,11 +79,11 @@ public class FoodBuildUI extends Application {
 
 	    
 	    
-	    // left section - food list
+	    // left section - food list  --------------------------------------------------------------------------------------------------------------
 	    VBox foodBox = new VBox();
 	    foodBox.setPadding(new Insets (20, 200, 20, 200));
 	    foodBox.setSpacing(10);
-	    foodBox.setStyle("-fx-background-color: #336699;");
+	    foodBox.setStyle("-fx-background-color: #B39DDB;");
 	    
 	    // title for food section
 	    Label foodLabel = new Label();
@@ -94,7 +95,7 @@ public class FoodBuildUI extends Application {
 	    food.addAll("Blueberries", "Flour", "Sugar", "Chicken Breast", "Maple Syrup", "Bacon", "Spaghetti Noodles", "Tomato Sauce", "Peanut Butter", "Raspberry Jelly", "Whole Wheat Bread",
 	    		"Lettuce", "Button Mushrooms", "Egg");
 	    final ListView foodView = new ListView(food);
-	    foodView.setPrefSize(200, 200);
+	    foodView.setPrefSize(300, 300);
 	    foodView.setEditable(true);
 	    
 	    // search field by name
@@ -106,24 +107,27 @@ public class FoodBuildUI extends Application {
 	    nutrientSearch.setPromptText("Search by nutrient...");
 	    
 	    // run query button
-	    Button runSearchQuery = new Button("Search");
+	    Button runSearchQuery = new Button("Search Food");
 	    runSearchQuery.setPrefSize(100, 20);
 	    
+	    // create food button
+	    Button createFood = new Button("Create Food");
+	    createFood.setPrefSize(100, 20);
+	    
 	    // add a new food item button
-	    Button addFood = new Button("Add Food");
+	    Button addFood = new Button("Add to Meal");
 	    addFood.setPrefSize(100, 20);
 	    
-	    
 	    // add all foodBox (left pane) components
-	    foodBox.getChildren().addAll(foodLabel, foodView, foodNameSearch, nutrientSearch, runSearchQuery, addFood);
+	    foodBox.getChildren().addAll(foodLabel, foodView, foodNameSearch, nutrientSearch, createFood, addFood, runSearchQuery);
 	    
 	    
 	    
-	    // right section - meal list
+	    // right section - meal list  --------------------------------------------------------------------------------------------------------------
 	    VBox mealBox = new VBox();
 	    mealBox.setPadding(new Insets (20, 200, 20, 200));
 	    mealBox.setSpacing(10);
-	    mealBox.setStyle("-fx-background-color: #336699;");
+	    mealBox.setStyle("-fx-background-color: #B39DDB;");
 	    Label mealLabel = new Label();
 	    mealLabel.setText("Meals");
 	    mealLabel.setPadding(new Insets(10));
@@ -132,32 +136,55 @@ public class FoodBuildUI extends Application {
 	    meals.addAll("Blueberry Pancakes", "Chicken and Waffles", "Spaghetti and Meatballs", "PBJ", "Shahi Paneer", "Burger and Fries", "Biscuits and Gravy", "Pepperoni Pizza",
 	    		"Rice and Beans", "Steak with Mushrooms", "Wedge Salad", "Barbecue Ribs", "Shrimp and Grits");
 	    final ListView mealView = new ListView(meals);
-	    mealView.setPrefSize(200, 200);
+	    mealView.setPrefSize(300, 300);
 	    mealView.setEditable(true);
-
+	    
+	    // add meal button
+	    Button addMeal = new Button();
+	    addMeal.setText("Create Meal");
+	    addMeal.setPrefSize(100, 20);
 	    
 	    // analyze meal button
 	    Button analyzeMeal = new Button();
 	    analyzeMeal.setText("Analyze Meal");
 	    analyzeMeal.setPrefSize(100, 20);
-	    
-	    // analysis summary section
-	    Label analysisResults = new Label();
-	    analysisResults.setText("Meal Analysis Results:");
+	    mealBox.getChildren().addAll(mealLabel, mealView, addMeal, analyzeMeal);
 	    
 	    
-	    mealBox.getChildren().addAll(mealLabel, mealView, analyzeMeal, analysisResults);
-	    
-	    
-	    // bottom section - exit button
+	    // bottom section - exit button --------------------------------------------------------------------------------------------------------------
 	    HBox bottomMenu = new HBox();
-	    bottomMenu.setPadding(new Insets (0) );
+	    bottomMenu.setPadding(new Insets (10) );
 	    bottomMenu.setSpacing(10);
-	    bottomMenu.setStyle("-fx-background-color: #336699;");
+	    bottomMenu.setStyle("-fx-background-color: #4527A0;");
 	    Button exitButton = new Button("Exit");
 	    exitButton.setPrefSize(100, 20);
 	    bottomMenu.getChildren().addAll(exitButton);
 		
+	    // middle section for results to be displayed  --------------------------------------------------------------------------------------------------------------
+
+	    
+	    
+	    VBox middle = new VBox();
+	    middle.setPadding(new Insets(20));
+	    middle.setSpacing(10);
+	    middle.setStyle("-fx-background-color: #B39DDB;");
+	    Label tempResultText = new Label();
+	    tempResultText.setText("Meal: Blueberry Pancakes");
+	    tempResultText.setFont(Font.font("Cambria", 24));
+	    tempResultText.setPadding(new Insets(10));
+	    
+	    ObservableList tempMealDisplay = FXCollections.observableArrayList();
+	    tempMealDisplay.addAll("Blueberries", "Flour", "Sugar", "Egg");
+	    final ListView tempMeal = new ListView(tempMealDisplay);
+	    tempMeal.setPrefSize(300, 300);
+	    tempMeal.setEditable(true);
+	    
+	    Label tempAnalysis = new Label();
+	    tempAnalysis.setLineSpacing(20);
+	    tempAnalysis.setText("<meal analysis will be here>");
+	    
+	    
+	    middle.getChildren().addAll(tempResultText, tempMeal, tempAnalysis);
 	    
 	    
 	    // add sections to borderPane
@@ -165,6 +192,7 @@ public class FoodBuildUI extends Application {
 		border.setLeft(foodBox);
 		border.setRight(mealBox);
 		border.setBottom(bottomMenu);
+		border.setCenter(middle);
 		//border.setCenter(listView);
 	    
 		
@@ -173,17 +201,6 @@ public class FoodBuildUI extends Application {
 		Scene scene = new Scene(border, Color.DARKGRAY);
 		primaryStage.setScene(scene);
 		primaryStage.show();
-		
-		
-		/*
-		// scene for clicking the add food button
-		VBox addFoodForm = new VBox();
-		addFoodForm.setStyle("-fx-background-color: #336699;");
-		Scene addFoodScene = new Scene(addFoodForm, Color.DARKGRAY);
-		primaryStage.setTitle("Add Food");
-		primaryStage.setScene(addFoodScene);
-		primaryStage.show();
-		*/
 		
 		
 		
