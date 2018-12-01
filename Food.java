@@ -12,7 +12,7 @@ public class Food {
 	private double protein; // grams of protein in this food
 	
 	
-	// setter and getter methods
+	// getter methods
 	
 	public String getId() {
 		return id;
@@ -70,7 +70,7 @@ public class Food {
 	 * @param id - the id of the food
 	 */
 	public void deleteFood(int id) {
-		
+		// TODO - remove food from the trees
 		
 	} // deleteFood()
 	

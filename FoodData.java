@@ -19,7 +19,7 @@ public class FoodData implements FoodDataADT<Food> {
     private List<Food> FoodList;
 
     // Map of nutrients and their corresponding index
-    //private HashMap<String, BPTree<Double, Food>> indexes;
+    private HashMap<String, BPTree<Double, Food>> indexes;
     
     
     /**
