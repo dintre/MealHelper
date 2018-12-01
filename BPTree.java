@@ -30,17 +30,22 @@ public class BPTree {
 			// while reading each line from the file
 			while(input.hasNextLine()) {
 				fileLine = input.nextLine();
+				
 				// check if line is blank, then continue
 				if(fileLine.length() == 0) {
 					System.out.println("That line was empty. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
+				
 				// split the data in the file by commas
 				String[] commaSplitter = fileLine.split(","); 
 				if(commaSplitter.length != 12) { // if line format is wrong (not twelve fields)
 					System.out.println("That line was badly formatted/incorrect. Continuing... ");
 					continue; // continue back to the while loop start
 				} 
+				
+				// otherwise the line is valid. Create a food item
+				Food newFood = new Food(commaSplitter[]);
 				
 			} // while reading lines
 			

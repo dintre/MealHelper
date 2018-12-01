@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class FoodData implements FoodDataADT<Food> {
     private List<Food> FoodList;
 
     // Map of nutrients and their corresponding index
-    private HashMap<String, BPTree<Double, Food>> indexes;
+    //private HashMap<String, BPTree<Double, Food>> indexes;
     
     
     /**
@@ -24,6 +25,7 @@ public class FoodData implements FoodDataADT<Food> {
      */
     public FoodData() {
         // TODO : Complete
+    	FoodList = new ArrayList<Food>();
     }
     
     
@@ -43,7 +45,7 @@ public class FoodData implements FoodDataADT<Food> {
 		// create line of file data
 		String fileLine = null;
 		// create file name
-		String fileName = "foodItems.csv";
+		String fileName = filePath;
 		
 		try {
 			foodFile = new File(fileName);
@@ -59,76 +61,42 @@ public class FoodData implements FoodDataADT<Food> {
 					System.out.println("That line was empty. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
-				
-				// create new scanner that scans just this line
-				Scanner lineScanner = new Scanner(fileLine);
-				lineScanner.useDelimiter(",");				
-				// get id
-				String id = lineScanner.next();
-				if(id == null) {
-					System.out.println("This line is invalid because ID was null. Continuing... "); // TODO - remove test code
-					continue; // continue on back to the while loop to scan a new line
+				String[] commaSplitter = fileLine.split(",");
+				if(commaSplitter.length == 0) {
+					System.out.println("That line was not formatted properly. Continuing... ");
+					continue; // continue back to while loop start
 				}
-				// get name of food
-				String name = lineScanner.next();
-				// declare remaining nutritional values to get
-				int calories;
-				int fat;
-				int carbs;
-				int fiber;
-				int protein;
-				
-				if(lineScanner.next().equals("calories")) {
-					calories = lineScanner.nextInt();
-				}
-				
-				if(lineScanner.next().equals("fat")) {
-					fat = lineScanner.nextInt();
-				}
-				
-				if(lineScanner.next().equals("carbohydrate")) {
-					carbs = lineScanner.nextInt();
-				}
-				
-				if(lineScanner.next().equals("fiber")) {
-					fiber = lineScanner.nextInt();
-				}
-				
-				if(lineScanner.next().equals("protein")) {
-					protein = lineScanner.nextInt();
-				}
-				
+				String id = commaSplitter[0];
+				String name = commaSplitter[1];
+				double calories = Double.parseDouble(commaSplitter[3]);
+				double fat = Double.parseDouble(commaSplitter[5]);
+				double carbs = Double.parseDouble(commaSplitter[7]);
+				double fiber = Double.parseDouble(commaSplitter[9]);
+				double protein = Double.parseDouble(commaSplitter[11]);
+				System.out.println(id + " " + name + " " + calories + " " + fat + " " + carbs + " " + fiber + " " + protein);
+
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
-				
+				FoodList.add(newFood);
+
 			} // while reading lines
 			
 			
 		} // try
+
 		catch (FileNotFoundException e) { // catch when the file isn't found
 			e.printStackTrace();
 		} // catch fileNotFound
 		
-		
-		
+		catch (Exception e) { // catch any other exceptions
+			e.printStackTrace();
+		}
+
 		finally {
-			
-			
+			// close the scanner
+			input.close();
 		} // finally
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-    }
+
+    } // loadFoods()
 
     /*
      * (non-Javadoc)
@@ -176,4 +144,19 @@ public class FoodData implements FoodDataADT<Food> {
 		
 	}
 
-}
+	
+	
+	public static void main(String[] args) {
+		
+		FoodData foods = new FoodData();
+		foods.loadFoods("foodItems.csv");
+		
+		System.out.println("Food list is this: ");
+		System.out.println(foods.FoodList);
+		
+	} // Main()
+	
+	
+	
+	
+} // class FoodData
