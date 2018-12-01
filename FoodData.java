@@ -1,5 +1,7 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +37,8 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public void loadFoods(String filePath) {
-        // TODO : Complete
     	// TODO - remove brand names at beginning of food names?
-    	// TODO - handle empty lines
+    	
     	// create variable for the file to be loaded
 		File foodFile = null;
 		// create scanner to look through file
@@ -63,7 +64,7 @@ public class FoodData implements FoodDataADT<Food> {
 				}
 				String[] commaSplitter = fileLine.split(",");
 				if(commaSplitter.length == 0) {
-					System.out.println("That line was not formatted properly. Continuing... ");
+					System.out.println("That line was not formatted properly. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
 				String id = commaSplitter[0];
@@ -125,6 +126,7 @@ public class FoodData implements FoodDataADT<Food> {
     @Override
     public void addFood(Food Food) {
         // TODO : Complete
+    	FoodList.add(Food);
     }
 
     /*
@@ -140,9 +142,41 @@ public class FoodData implements FoodDataADT<Food> {
 
 	@Override
 	public void saveFoods(String filename) {
-		// TODO Auto-generated method stub
+		File saveFile = null;
+		PrintStream writer = null;
 		
-	}
+		try {
+			saveFile = new File(filename); // create the file
+			writer = new PrintStream(saveFile); // create the writer
+			
+			// loop through the current arraylist of food
+			for(int i = 0; i < FoodList.size(); i++) {
+				Food current = FoodList.get(i);
+				// write the line
+				writer.println(current.getId() + "," + current.getName()
+				+ ",calories," + current.getCalories() + ",fat," + 
+				current.getFat() + ",carbohydrates," + current.getCarbohydrates() 
+				+ ",fiber," + current.getFiber() + ",protein," 
+				+ current.getProtein());
+			} // for loop
+			
+		} // try
+		
+		catch (IOException e){ // could not save for some reason
+			System.out.println("Could not save the food list. ");
+		}
+		
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		finally {
+			if(writer != null) {
+				writer.close();
+			}
+		}
+		
+	} // saveFoods()
 
 	
 	
@@ -153,6 +187,8 @@ public class FoodData implements FoodDataADT<Food> {
 		
 		System.out.println("Food list is this: ");
 		System.out.println(foods.FoodList);
+		
+		foods.saveFoods("testSave.csv");
 		
 	} // Main()
 	

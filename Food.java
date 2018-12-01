@@ -11,6 +11,37 @@ public class Food {
 	private double fiber; // grams of fiber in this food
 	private double protein; // grams of protein in this food
 	
+	
+	// setter and getter methods
+	
+	public String getId() {
+		return id;
+	} // getId()
+	
+	public String getName() {
+		return name;
+	} // getName()
+	
+	public double getCalories() {
+		return calories;
+	} // getCalories()
+	
+	public double getFat() {
+		return fat;
+	} // getFat()
+	
+	public double getCarbohydrates() {
+		return carbohydrates;
+	} // getCarbohydrates()
+	
+	public double getFiber() {
+		return fiber;
+	} // getFiber()
+	
+	public double getProtein() {
+		return protein;
+	} // getProtein()
+	
 	/*
 	 * constructor for a food item
 	 */
