@@ -65,16 +65,6 @@ public class Food {
 		this.protein = protein;
 	} // constructor food
 	
-	/*
-	 * deletes a food item
-	 * @param id - the id of the food
-	 */
-	public void deleteFood(int id) {
-		// TODO - remove food from the trees
-		
-	} // deleteFood()
-	
-	
 	
 	
 	

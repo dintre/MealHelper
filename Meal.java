@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Meal {
 	private ArrayList<Food> foodList; // list of food items in this meal
 	private String name; // name of the meal
+	private int id;
 	
 	/*
 	 * constructor for a meal

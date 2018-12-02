@@ -59,12 +59,12 @@ public class FoodData implements FoodDataADT<Food> {
 				
 				// check if line is blank, then continue
 				if(fileLine.length() == 0) {
-					System.out.println("That line was empty. Continuing... "); // TODO - remove
+					//System.out.println("That line was empty. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
 				String[] commaSplitter = fileLine.split(",");
 				if(commaSplitter.length == 0) {
-					System.out.println("That line was not formatted properly. Continuing... "); // TODO - remove
+					//System.out.println("That line was not formatted properly. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
 				String id = commaSplitter[0];
@@ -74,7 +74,7 @@ public class FoodData implements FoodDataADT<Food> {
 				double carbs = Double.parseDouble(commaSplitter[7]);
 				double fiber = Double.parseDouble(commaSplitter[9]);
 				double protein = Double.parseDouble(commaSplitter[11]);
-				System.out.println(id + " " + name + " " + calories + " " + fat + " " + carbs + " " + fiber + " " + protein);
+				//System.out.println(id + " " + name + " " + calories + " " + fat + " " + carbs + " " + fiber + " " + protein); // TODO - remove
 
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
 				FoodList.add(newFood);
@@ -105,8 +105,25 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByName(String substring) {
-        // TODO : Complete
-        return null;
+    	substring = substring.toLowerCase();
+    	// create list to be returned
+    	ArrayList<Food> returnList = new ArrayList<Food>();
+    	
+    	// if the list of food list is empty, return empty list
+    	if(FoodList.isEmpty()) {
+    		return returnList;
+    	}
+    	
+    	// loop through foodList food names and check if name contains search string
+    	for(int i = 0; i < FoodList.size(); i++) {
+    		String foodName = FoodList.get(i).getName().toLowerCase();
+    		if(foodName.contains(substring)) {
+    			returnList.add(FoodList.get(i));
+    			System.out.println(FoodList.get(i).getName()); // TODO - remove test code
+    		}
+    	}
+
+        return returnList;
     }
 
     /*
@@ -125,7 +142,7 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public void addFood(Food Food) {
-        // TODO : Complete
+        // TODO : Complete?
     	FoodList.add(Food);
     }
 
@@ -187,6 +204,14 @@ public class FoodData implements FoodDataADT<Food> {
 		
 		System.out.println("Food list is this: ");
 		System.out.println(foods.FoodList);
+		
+		System.out.println();
+		System.out.println();
+		System.out.println("Filtering by names ");
+		System.out.println();
+		System.out.println("Filter by 'soy' :"); foods.filterByName("soy");
+		System.out.println();
+		System.out.println("Filter by 'nut' :"); foods.filterByName("nut");
 		
 		foods.saveFoods("testSave.csv");
 		
