@@ -120,12 +120,15 @@ public class FoodBuildUI extends Application {
 	    Button createFood = new Button("Create Food");
 	    createFood.setPrefSize(100, 20);
 	    
-	    // add a new food item button
+	    // add a new food item to a meal button -------
 	    Button addFood = new Button("Add to Meal");
 	    addFood.setPrefSize(100, 20);
 	    
 	    // add all foodBox (left pane) components  TODO - readd this?
 	    foodBox.getChildren().addAll(foodLabel, foodView, foodNameSearch, nutrientSearch, createFood, addFood, runSearchQuery);
+	    
+
+	    
 	    
 	    
 	    
@@ -157,17 +160,17 @@ public class FoodBuildUI extends Application {
 	    addMeal.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
-	    		System.out.println("Add Meal button pressed. "); // TODO - remove
+	    		System.out.println("Add Meal button pressed. "); // TODO - remove test code
 	    		String mealName = mealNameField.getText();
 	    	    Meal newMeal = new Meal(mealName);
-	    	    System.out.println(newMeal);
+	    	    System.out.println(newMeal); // TODO - remove test code
 	    	    
 	    	    // add new meal to the meal list
 	    	    meals.add(newMeal.getName());
 	    		};
 	    	} );
 
-	    
+	    	    
 	    
 	    // analyze meal button
 	    Button analyzeMeal = new Button();
@@ -220,18 +223,38 @@ public class FoodBuildUI extends Application {
 	    
 	    
 	    
-	    
-	    
-	    
-	    
 	    // middle section for results to be displayed  --------------------------------------------------------------------------------------------------------------
-
 	    
 	    
 	    VBox middle = new VBox();
 	    middle.setPadding(new Insets(20));
 	    middle.setSpacing(10);
 	    middle.setStyle("-fx-background-color: #B39DDB;");
+	    
+	    // for displaying the selected meals' ingredients
+	    Label mealIngredientsDisplay = new Label();
+	    mealIngredientsDisplay.setText("Ingredients for: ");
+	    mealIngredientsDisplay.setFont(Font.font("Cambria", 24));
+	    mealIngredientsDisplay.setPadding(new Insets(10));
+	    ObservableList ingredientsList = FXCollections.observableArrayList();
+	    // select a meal - display its ingredients
+	 	Meal currentMeal = (Meal) mealView.getSelectionModel().getSelectedItem(); // TODO - find how to identify this is selected properly, then add its ingredients
+	 	//ingredientsList.addAll(currentMeal.getIngredientList());
+	    
+	 	
+	    
+	    addFood.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		System.out.println("Add food to meal button pressed. "); // TODO - remove test code
+	    		ingredientsList.add(foodView.getSelectionModel().getSelectedItem());
+	    	    
+	    		
+	    	   
+	    		};
+	    	} );
+	    
+	    
 	    Label tempResultText = new Label();
 	    tempResultText.setText("Meal: Blueberry Pancakes");
 	    tempResultText.setFont(Font.font("Cambria", 24));
@@ -249,6 +272,21 @@ public class FoodBuildUI extends Application {
 	    
 	    
 	    middle.getChildren().addAll(tempResultText, tempMeal, tempAnalysis);
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+
+	    
+	    
 	    
 	    
 	    // add sections to borderPane

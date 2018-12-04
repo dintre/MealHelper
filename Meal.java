@@ -38,7 +38,17 @@ public class Meal {
 		ingredientList.remove(food);
 	}
 	
-	
+	// TODO - should this work this way?
+	// used to display food names that are in a meal
+	public ArrayList<String> getIngredientList(){
+		ArrayList<String> returnList = new ArrayList<String>();
+		
+		for(int i = 0; i < ingredientList.size(); i++) {
+			returnList.add(ingredientList.get(i).getName());
+		}
+		
+		return returnList;
+	} // getIngredientList()
 	
 	
 	
