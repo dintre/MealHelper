@@ -40,6 +40,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             throw new IllegalArgumentException(
                "Illegal branching factor: " + branchingFactor);
         }
+        root = null;
+        this.branchingFactor = branchingFactor;
         // TODO : Complete
     }
     
@@ -51,10 +53,25 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     @Override
     public void insert(K key, V value) {
         // TODO : Complete
+    	if (key==null) {
+    		throw new IllegalArgumentException();
+    	}
+    	
+    	LeafNode leaf = this.find(key);
     }
     
     
-    /*
+    private BPTree<K, V>.LeafNode find(K key) {
+		// TODO Auto-generated method stub
+    	Node currentNode = root;
+    	
+    	while(!(currentNode instanceof BPTree.LeafNode))
+    		;
+		return null;
+	}
+
+
+	/*
      * (non-Javadoc)
      * @see BPTreeADT#rangeSearch(java.lang.Object, java.lang.String)
      */
@@ -121,6 +138,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         Node() {
             // TODO : Complete
+        	keys = new ArrayList<K>();
         }
         
         /**
@@ -182,6 +200,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         InternalNode() {
             super();
+            keys = new ArrayList<K>();
+            children = new ArrayList<Node>();
             // TODO : Complete
         }
         
@@ -191,7 +211,25 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         K getFirstLeafKey() {
             // TODO : Complete
-            return null;
+        	Node current = this;
+        	while(current instanceof BPTree.InternalNode) {
+        		Node first = children.get(0);
+        		K firstK = first.keys.get(0);
+            	Node compare;
+            	K compareK;
+            	for(int i = 1; i < children.size(); i++) {
+            		compare = children.get(i);
+            		compareK = compare.keys.get(0);
+            		if(compareK.compareTo(firstK) < 1) {
+            			first = compare;
+            			firstK = compareK;
+            		}
+            	}
+            	
+            	current = first;
+        	}
+        	K firstKey = current.getFirstLeafKey();
+            return firstKey;
         }
         
         /**
@@ -256,6 +294,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         LeafNode() {
             super();
+            
             // TODO : Complete
         }
         
@@ -266,7 +305,15 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         K getFirstLeafKey() {
             // TODO : Complete
-            return null;
+        	K first = keys.get(0);
+        	K compare;
+        	for(int i = 1; i < keys.size(); i++) {
+        		compare = keys.get(i);
+        		if(compare.compareTo(first) < 1) {
+        			first = compare;
+        		}
+        	}
+            return first;
         }
         
         /**
@@ -284,6 +331,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         void insert(K key, V value) {
             // TODO : Complete
+        	
         }
         
         /**
@@ -317,6 +365,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
+        System.out.println("Hey this actually runs at least");
 
         // create a pseudo random number generator
         Random rnd1 = new Random();
