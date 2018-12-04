@@ -4,24 +4,30 @@ import java.util.ArrayList;
  * 
  */
 public class Meal {
-	private ArrayList<Food> foodList; // list of food items in this meal
+	private ArrayList<Food> ingredientList; // list of food items in this meal
 	private String name; // name of the meal
-	private int id;
+	private int id; // TODO - do i need this?
 	
 	/*
 	 * constructor for a meal
 	 */
 	public Meal(String name) {
 		this.name = name;
-		foodList = new ArrayList<Food>();
+		ingredientList = new ArrayList<Food>();
 	} // constructor Meal
+	
+	// getters and setters
+	
+	public String getName() {
+		return name;
+	} // getName()
 	
 	/*
 	 * adds a food item to this meal
 	 * @param food - the food to be added
 	 */
 	public void addFood(Food food) {
-		foodList.add(food);
+		ingredientList.add(food);
 	} // addFood()
 	
 	/*
@@ -29,7 +35,7 @@ public class Meal {
 	 * @param food - the food to be removed
 	 */
 	public void removeFood(Food food) {
-		foodList.remove(food);
+		ingredientList.remove(food);
 	}
 	
 	

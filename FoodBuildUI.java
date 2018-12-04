@@ -145,16 +145,35 @@ public class FoodBuildUI extends Application {
 	    mealView.setPrefSize(300, 300);
 	    mealView.setEditable(true);
 	    
+	    // meal name text field
+	    TextField mealNameField = new TextField();
+	    mealNameField.setPromptText("meal name...");
+	    mealNameField.setPrefSize(250, 20);
+	    
 	    // add meal button
 	    Button addMeal = new Button();
 	    addMeal.setText("Create Meal");
 	    addMeal.setPrefSize(100, 20);
+	    addMeal.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		System.out.println("Add Meal button pressed. "); // TODO - remove
+	    		String mealName = mealNameField.getText();
+	    	    Meal newMeal = new Meal(mealName);
+	    	    System.out.println(newMeal);
+	    	    
+	    	    // add new meal to the meal list
+	    	    meals.add(newMeal.getName());
+	    		};
+	    	} );
+
+	    
 	    
 	    // analyze meal button
 	    Button analyzeMeal = new Button();
 	    analyzeMeal.setText("Analyze Meal");
 	    analyzeMeal.setPrefSize(100, 20);
-	    mealBox.getChildren().addAll(mealLabel, mealView, addMeal, analyzeMeal);
+	    mealBox.getChildren().addAll(mealLabel, mealView, mealNameField, addMeal, analyzeMeal);
 	    
 	    
 	    // bottom section - exit button --------------------------------------------------------------------------------------------------------------
@@ -174,7 +193,7 @@ public class FoodBuildUI extends Application {
 	    importButton.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
-	    		System.out.println("Load button pressed. ");
+	    		System.out.println("Load button pressed. "); // TODO - remove
 	    		foodList.loadFoods("foodItems.csv");
 	    	    food.addAll(foodList.getFoodNames());
 
@@ -187,7 +206,7 @@ public class FoodBuildUI extends Application {
 	    exportButton.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
-	    		System.out.println("Save button pressed. ");
+	    		System.out.println("Save button pressed. "); // TODO - remove
 	    		foodList.saveFoods("savedFoods.csv");
 	    		};
 	    	} );
