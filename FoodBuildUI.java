@@ -1,6 +1,7 @@
 //package cs400;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Scanner;
 
@@ -55,6 +56,12 @@ public class FoodBuildUI extends Application {
 		primaryStage.setTitle("Food Helper");
 		primaryStage.show();	
 		
+		// instantiate other classes that are needed at startup -------------------------------
+		// FoodData - the list of food
+	    FoodData foodList = new FoodData();
+		
+		
+		
 		// establish initial borderPane layout
 		BorderPane border = new BorderPane();
 		
@@ -71,13 +78,9 @@ public class FoodBuildUI extends Application {
 	    programTitle.setTextFill(Color.web("#FAFAFA"));
 	    programTitle.setFont(Font.font("Cambria", 32));
 	    
-	    Button importButton = new Button("Import");
-	    importButton.setPrefSize(100, 20);
-	    Button exportButton = new Button("Export");
-	    exportButton.setPrefSize(100, 20);
-	    headingbox.getChildren().addAll(programTitle, importButton, exportButton);	
-
+	    ObservableList food = FXCollections.observableArrayList();
 	    
+	    	    
 	    
 	    // left section - food list  --------------------------------------------------------------------------------------------------------------
 	    VBox foodBox = new VBox();
@@ -91,12 +94,15 @@ public class FoodBuildUI extends Application {
 	    foodLabel.setPadding(new Insets(10));
 	    foodLabel.setFont(Font.font("Cambria", 24));
 	    
-	    ObservableList food = FXCollections.observableArrayList();
-	    food.addAll("Blueberries", "Flour", "Sugar", "Chicken Breast", "Maple Syrup", "Bacon", "Spaghetti Noodles", "Tomato Sauce", "Peanut Butter", "Raspberry Jelly", "Whole Wheat Bread",
-	    		"Lettuce", "Button Mushrooms", "Egg");
+	    
+	    
+	   // food.addAll("Blueberries", "Flour", "Sugar", "Chicken Breast", "Maple Syrup", "Bacon", "Spaghetti Noodles", "Tomato Sauce", "Peanut Butter", "Raspberry Jelly", "Whole Wheat Bread",
+	    		//"Lettuce", "Button Mushrooms", "Egg");
+	    		
 	    final ListView foodView = new ListView(food);
 	    foodView.setPrefSize(300, 300);
 	    foodView.setEditable(true);
+	    
 	    
 	    // search field by name
 	    TextField foodNameSearch = new TextField();
@@ -118,7 +124,7 @@ public class FoodBuildUI extends Application {
 	    Button addFood = new Button("Add to Meal");
 	    addFood.setPrefSize(100, 20);
 	    
-	    // add all foodBox (left pane) components
+	    // add all foodBox (left pane) components  TODO - readd this?
 	    foodBox.getChildren().addAll(foodLabel, foodView, foodNameSearch, nutrientSearch, createFood, addFood, runSearchQuery);
 	    
 	    
@@ -160,6 +166,45 @@ public class FoodBuildUI extends Application {
 	    exitButton.setPrefSize(100, 20);
 	    bottomMenu.getChildren().addAll(exitButton);
 		
+	    
+	    // import and export buttons
+	    // import foods from a file
+	    Button importButton = new Button("Import");
+	    importButton.setPrefSize(100, 20);
+	    importButton.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		System.out.println("Load button pressed. ");
+	    		foodList.loadFoods("foodItems.csv");
+	    	    food.addAll(foodList.getFoodNames());
+
+	    	}
+	    } ); // importButton.setOnAction()
+	    
+	    // save foods to a file
+	    Button exportButton = new Button("Export");
+	    exportButton.setPrefSize(100, 20);
+	    exportButton.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		System.out.println("Save button pressed. ");
+	    		foodList.saveFoods("savedFoods.csv");
+	    		};
+	    	} );
+	    
+	    
+	    // add buttons and title to the heading box
+	    headingbox.getChildren().addAll(programTitle, importButton, exportButton);	
+
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
+	    
 	    // middle section for results to be displayed  --------------------------------------------------------------------------------------------------------------
 
 	    

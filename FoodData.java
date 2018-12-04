@@ -36,9 +36,7 @@ public class FoodData implements FoodDataADT<Food> {
      * @see skeleton.FoodDataADT#loadFoods(java.lang.String)
      */
     @Override
-    public void loadFoods(String filePath) {
-    	// TODO - remove brand names at beginning of food names?
-    	
+    public void loadFoods(String filePath) {    	
     	// create variable for the file to be loaded
 		File foodFile = null;
 		// create scanner to look through file
@@ -153,7 +151,8 @@ public class FoodData implements FoodDataADT<Food> {
     @Override
     public List<Food> getAllFoods() {
         // TODO : Complete
-        return null;
+    	// TODO - should this return just the food names? Or have a separate method for that?
+    	return null;
     }
 
 
@@ -195,6 +194,18 @@ public class FoodData implements FoodDataADT<Food> {
 		
 	} // saveFoods()
 
+	// TODO - do we need this? Or can we make the original one work on its own
+	public ArrayList<String> getFoodNames(){
+    	ArrayList<Food> tempList = (ArrayList<Food>) FoodList;
+    	
+    	ArrayList<String> returnList = new ArrayList<String>();
+    	
+    	for(int i = 0; i < tempList.size(); i++) {
+    		returnList.add(tempList.get(i).getName());
+    	}
+    	   	
+    	return returnList;
+	}
 	
 	
 	public static void main(String[] args) {
