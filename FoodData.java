@@ -152,7 +152,7 @@ public class FoodData implements FoodDataADT<Food> {
     public List<Food> getAllFoods() {
         // TODO : Complete
     	// TODO - should this return just the food names? Or have a separate method for that?
-    	return null;
+    	return FoodList;
     }
 
 
