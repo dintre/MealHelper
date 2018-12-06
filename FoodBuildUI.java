@@ -2,9 +2,13 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Scanner;
 
+//import javax.swing.event.ChangeListener;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +20,8 @@ import javafx.geometry.Pos;
 import javafx.stage.Stage;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -95,9 +101,6 @@ public class FoodBuildUI extends Application {
 	    foodLabel.setFont(Font.font("Cambria", 24));
 	    
 	    
-	    
-	   // food.addAll("Blueberries", "Flour", "Sugar", "Chicken Breast", "Maple Syrup", "Bacon", "Spaghetti Noodles", "Tomato Sauce", "Peanut Butter", "Raspberry Jelly", "Whole Wheat Bread",
-	    		//"Lettuce", "Button Mushrooms", "Egg");
 	    		
 	    final ListView foodView = new ListView(food);
 	    foodView.setPrefSize(300, 300);
@@ -142,8 +145,7 @@ public class FoodBuildUI extends Application {
 	    mealLabel.setPadding(new Insets(10));
 	    mealLabel.setFont(Font.font("Cambria", 24));
 	    ObservableList meals = FXCollections.observableArrayList();
-	    meals.addAll("Blueberry Pancakes", "Chicken and Waffles", "Spaghetti and Meatballs", "PBJ", "Shahi Paneer", "Burger and Fries", "Biscuits and Gravy", "Pepperoni Pizza",
-	    		"Rice and Beans", "Steak with Mushrooms", "Wedge Salad", "Barbecue Ribs", "Shrimp and Grits");
+	    meals.addAll("Blueberry Pancakes", "Chicken and Waffles", "Spaghetti and Meatballs", "PBJ", "Shahi Paneer");
 	    final ListView mealView = new ListView(meals);
 	    mealView.setPrefSize(300, 300);
 	    mealView.setEditable(true);
@@ -162,13 +164,19 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		System.out.println("Add Meal button pressed. "); // TODO - remove test code
 	    		String mealName = mealNameField.getText();
-	    	    Meal newMeal = new Meal(mealName);
-	    	    System.out.println(newMeal); // TODO - remove test code
-	    	    
-	    	    // add new meal to the meal list
-	    	    meals.add(newMeal.getName());
+		    	Meal newMeal = new Meal(mealName);
+		    	Food tempFood = new Food("Foodid", "foodname", 5, 6, 7, 7, 8);
+		    	newMeal.addFood(tempFood);
+		    	System.out.println(newMeal); // TODO - remove test code
+		    	    
+		    	// add new meal to the meal list
+		    	meals.add(newMeal);
+	    		
+
 	    		};
 	    	} );
+    	ObservableList nutritionList = FXCollections.observableArrayList();
+	    final ListView nutritionView = new ListView(nutritionList);
 
 	    	    
 	    
@@ -176,8 +184,26 @@ public class FoodBuildUI extends Application {
 	    Button analyzeMeal = new Button();
 	    analyzeMeal.setText("Analyze Meal");
 	    analyzeMeal.setPrefSize(100, 20);
+	    analyzeMeal.setOnAction(new EventHandler<ActionEvent>() {
+	    	public void handle(ActionEvent event) {
+	    	System.out.println("test in analyze meal button.");	
+	    	Meal curMeal = (Meal) mealView.getSelectionModel().getSelectedItem();
+	    	double [] nutritionArray = curMeal.analyzeMealNutrition();
+		    
+		    String displayAnalysis = "Calories: " + nutritionArray[0] + " Fat: " + nutritionArray[1] + " Carbs: " + nutritionArray[2] + " Fiber: " + nutritionArray[3] + " Protein: " + nutritionArray[4];
+	    	nutritionList.add(displayAnalysis);
+
+		    nutritionView.setPrefSize(300, 300);
+		    nutritionView.setEditable(true);
+		   
+	    	};
+	    } );
+	    
+	    
 	    mealBox.getChildren().addAll(mealLabel, mealView, mealNameField, addMeal, analyzeMeal);
 	    
+	    
+
 	    
 	    // bottom section - exit button --------------------------------------------------------------------------------------------------------------
 	    HBox bottomMenu = new HBox();
@@ -198,7 +224,8 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		System.out.println("Load button pressed. "); // TODO - remove
 	    		foodList.loadFoods("foodItems.csv");
-	    	    food.addAll(foodList.getFoodNames());
+	    	    //food.addAll(foodList.getFoodNames());
+	    		food.addAll(foodList.getAllFoods());
 
 	    	}
 	    } ); // importButton.setOnAction()
@@ -236,58 +263,57 @@ public class FoodBuildUI extends Application {
 	    mealIngredientsDisplay.setText("Ingredients for: ");
 	    mealIngredientsDisplay.setFont(Font.font("Cambria", 24));
 	    mealIngredientsDisplay.setPadding(new Insets(10));
-	    ObservableList ingredientsList = FXCollections.observableArrayList();
+	    
+	    
+	    
+	    // list of currently selected meals' ingredients
+	    ObservableList ingredients = FXCollections.observableArrayList();
+	    ingredients.addAll("Blueberries", "Flour", "Eggs");
+	    ListView<String> ingredientView = new ListView<String>(ingredients);
+	    mealView.setPrefSize(300, 300);
+	    mealView.setEditable(false);
+	    
+	    /*
 	    // select a meal - display its ingredients
 	 	Meal currentMeal = (Meal) mealView.getSelectionModel().getSelectedItem(); // TODO - find how to identify this is selected properly, then add its ingredients
-	 	//ingredientsList.addAll(currentMeal.getIngredientList());
-	    
 	 	
-	    
+	 	mealView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> arg0, String arg1, String arg2) {
+	 			mealIngredientsDisplay.setText("changed!");
+	 			String test = ingredientView.getSelectionModel().getSelectedItem();
+	 			ingredients.addAll(test);
+	 			ingredients.addAll(currentMeal.getName());
+			}
+	 	});
+	 	*/
+	 	
+	 	/*
+	 	// add food button action
 	    addFood.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
-	    	public void handle(ActionEvent event) {
 	    		System.out.println("Add food to meal button pressed. "); // TODO - remove test code
-	    		ingredientsList.add(foodView.getSelectionModel().getSelectedItem());
+	    		Meal currentMeal = new Meal("This one");
+	    		currentMeal.addFood((Food) foodView.getSelectionModel().getSelectedItem());
 	    	    
-	    		
+	    		System.out.println(currentMeal.getIngredientList());
 	    	   
 	    		};
 	    	} );
-	    
-	    
-	    Label tempResultText = new Label();
-	    tempResultText.setText("Meal: Blueberry Pancakes");
-	    tempResultText.setFont(Font.font("Cambria", 24));
-	    tempResultText.setPadding(new Insets(10));
-	    
-	    ObservableList tempMealDisplay = FXCollections.observableArrayList();
-	    tempMealDisplay.addAll("Blueberries", "Flour", "Sugar", "Egg");
-	    final ListView tempMeal = new ListView(tempMealDisplay);
-	    tempMeal.setPrefSize(300, 300);
-	    tempMeal.setEditable(true);
-	    
-	    Label tempAnalysis = new Label();
-	    tempAnalysis.setLineSpacing(20);
-	    tempAnalysis.setText("<meal analysis will be here>");
-	    
-	    
-	    middle.getChildren().addAll(tempResultText, tempMeal, tempAnalysis);
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
-	    
+	    */
 
 	    
+	    middle.getChildren().addAll(mealIngredientsDisplay, nutritionView);
 	    
 	    
+	    // button from demo
+	    /*
+	    Button button1 = new Button();
+	    button1.setOnAction(e -> {
+	    	Alert buttonAlert3 = new Alert(AlertType.INFORMATION, "this alert")
+	    			buttonAlert3.showAndWait()
+	    });
+	    */
 	    
 	    // add sections to borderPane
 		border.setTop(headingbox);
