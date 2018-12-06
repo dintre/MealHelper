@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * 
@@ -50,7 +51,31 @@ public class Meal {
 		return returnList;
 	} // getIngredientList()
 	
-	
+	public double[] analyzeMealNutrition() {
+
+		double calories = 0;
+		double fat = 0;
+		double carbs = 0;
+		double fiber = 0;
+		double protein = 0;
+		
+		for(int i = 0; i < ingredientList.size(); i++) {
+			Food currentFood = ingredientList.get(i);
+			calories = calories + currentFood.getCalories();
+			fat = fat + currentFood.getFat();
+			carbs = carbs + currentFood.getCarbohydrates();
+			fiber = fiber + currentFood.getFiber();
+			protein = protein + currentFood.getProtein();	
+		}
+		double nutrition [] = new double[5];
+		nutrition[0] = calories;
+		nutrition[1] = fat;
+		nutrition[2] = carbs;
+		nutrition[3] = fiber;
+		nutrition[4] = protein;
+		
+		return nutrition;
+	} //analyzeMealNutrition()
 	
 	
 	
