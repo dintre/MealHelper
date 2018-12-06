@@ -48,7 +48,6 @@ public class FoodData implements FoodDataADT<Food> {
 		
 		try {
 			foodFile = new File(fileName);
-			System.out.println("Reading food data. "); // TODO - remove
 			input = new Scanner(foodFile);
 			
 			// while reading each line from the file
@@ -57,12 +56,10 @@ public class FoodData implements FoodDataADT<Food> {
 				
 				// check if line is blank, then continue
 				if(fileLine.length() == 0) {
-					//System.out.println("That line was empty. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
 				String[] commaSplitter = fileLine.split(",");
 				if(commaSplitter.length == 0) {
-					//System.out.println("That line was not formatted properly. Continuing... "); // TODO - remove
 					continue; // continue back to while loop start
 				}
 				String id = commaSplitter[0];
@@ -72,7 +69,6 @@ public class FoodData implements FoodDataADT<Food> {
 				double carbs = Double.parseDouble(commaSplitter[7]);
 				double fiber = Double.parseDouble(commaSplitter[9]);
 				double protein = Double.parseDouble(commaSplitter[11]);
-				//System.out.println(id + " " + name + " " + calories + " " + fat + " " + carbs + " " + fiber + " " + protein); // TODO - remove
 
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
 				FoodList.add(newFood);
