@@ -41,14 +41,14 @@ public class Meal {
 	
 	// TODO - should this work this way?
 	// used to display food names that are in a meal
-	public ArrayList<String> getIngredientList(){
+	public ArrayList<Food> getIngredientList(){
 		ArrayList<String> returnList = new ArrayList<String>();
 		
 		for(int i = 0; i < ingredientList.size(); i++) {
 			returnList.add(ingredientList.get(i).getName());
 		}
 		
-		return returnList;
+		return ingredientList;
 	} // getIngredientList()
 	
 	public double[] analyzeMealNutrition() {
@@ -78,6 +78,18 @@ public class Meal {
 	} //analyzeMealNutrition()
 	
 	
+	public void addFoodList(List<Food> foods) {
+		for(int i = 0; i < foods.size(); i++) {
+			ingredientList.add(foods.get(i));
+		}
+		
+	} // addFoodList()
+	
+	public void removeMultipleFoods(List<Food> foods) {
+		for(int i = 0; i < foods.size(); i++) {
+			ingredientList.remove(foods.get(i));
+		}
+	} // removeMultipleFoods()
 	
 	
 	
