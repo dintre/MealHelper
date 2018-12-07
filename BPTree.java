@@ -21,6 +21,8 @@ import java.util.Random;
  * @param <K> key - expect a string that is the type of id for each item
  * @param <V> value - expect a user-defined type that stores all data for a food item
  */
+
+//TODO: 2 and 3 should not be split; maybe change how nodes get divided up?
 public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 
     // Root of the tree
@@ -197,6 +199,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 
         // List of children nodes
         List<Node> children;
+        List<K> childrenKeys;
         
         /**
          * Package constructor
@@ -204,6 +207,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         InternalNode() {
             super();
             children = new ArrayList<Node>();
+            childrenKeys = new ArrayList<K>();
             // TODO : Complete
         }
         
@@ -213,7 +217,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         K getFirstLeafKey() {
             // TODO : Complete
-        	Node current = this;
+        /*	Node current = this;
         	while(current instanceof BPTree.InternalNode) {
         		Node first = children.get(0);
         		K firstK = first.keys.get(0);
@@ -229,8 +233,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}
             	
             	current = first;
-        	}
-        	K firstKey = current.getFirstLeafKey();
+        	}*/
+        	K firstKey = children.get(0).getFirstLeafKey();
             return firstKey;
         }
         
@@ -256,7 +260,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	
         	int insertionPoint = Collections.binarySearch(keys,key);
         	if(insertionPoint < 0) {
-        		insertionPoint = (1 + insertionPoint)  * -1;
+        		insertionPoint = (insertionPoint  * -1) - 1;
+        	}
+        	else {
+        		insertionPoint = insertionPoint + 1;
         	}
         	Node insertionNode = children.get(insertionPoint);
         	insertionNode.insert(key, value);
@@ -269,15 +276,19 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             	}
         		this.keys.add(newKidPlace, newKid.getFirstLeafKey());
         		this.children.add(newKidPlace + 1, newKid);
+        		if(newKid instanceof BPTree.InternalNode) {
+        			newKid.keys.remove(0);
+        		}
         	}
         	
         	
         	if(root.isOverflow()) {
         		Node newSib = this.split();
         		InternalNode newRoot = new InternalNode();
-        		newRoot.children.add(root);
+        		newRoot.children.add(this);
         		newRoot.children.add(newSib);
         		newRoot.keys.add(newSib.getFirstLeafKey());
+        		newSib.keys.remove(0);
         		root = newRoot;	
         		
         	}
@@ -376,36 +387,21 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         void insert(K key, V value) {
             // TODO : Complete
-        	int place = keys.size() - 1;
-        	if(place < 0 || keys.get(place).compareTo(key) < 0) {
-        		keys.add(key);
-        		values.add(value);
+        	int insertionPoint = Collections.binarySearch(keys,key);
+        	if(insertionPoint < 0) {
+        		insertionPoint = (1 + insertionPoint)  * -1;
         	}
         	
-        	else {
-        		
-        		for(place = 0; place < keys.size(); place++) {
-        			K currentPlace = keys.get(place);
-        			if (currentPlace.compareTo(key) > 0) {
-        				keys.add(place,key);
-        				values.add(place,value);
-        				break;
-        			}
-        			
-        			if (currentPlace.compareTo(key) == 0) {
-        				keys.add(place+1,key);
-        				values.add(place+1,value);
-        				break;
-        			}
-        			
-        		}
-        	}
+        	keys.add(insertionPoint,key);
+			values.add(insertionPoint,value);
+        	
         	if(root.isOverflow()) {
-        		LeafNode newSib = (BPTree<K, V>.LeafNode) this.split();
+        		Node newSib = split();
         		InternalNode newRoot = new InternalNode();
-        		newRoot.children.add(root);
+        		newRoot.children.add(this);
         		newRoot.children.add(newSib);
         		newRoot.keys.add(newSib.getFirstLeafKey());
+        		newRoot.childrenKeys.add(key);
         		root = newRoot;	
         	}
         }
@@ -456,8 +452,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
-        BPTree<Double, Double> bpTree = new BPTree<>(4);
-        System.out.println("Hey this actually runs at least");
+        BPTree<Double, Double> bpTree = new BPTree<>(3);
 
         // create a pseudo random number generator
         Random rnd1 = new Random();
@@ -468,13 +463,16 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         bpTree.insert(0.3d, 0.4d);
         bpTree.insert(0.3d, 0.5d);
         bpTree.insert(0.4d, 0.4d);
-        bpTree.insert(0.5d, 0.4d);
-        bpTree.insert(0.6d, 0.4d);
+       bpTree.insert(0.5d, 0.4d);
+      bpTree.insert(0.6d, 0.4d);
         bpTree.insert(0.1d, 0.4d);
-        bpTree.insert(0.8d, 0.4d);
+       bpTree.insert(0.8d, 0.4d);
         bpTree.insert(0.2d, 0.8d);
         bpTree.insert(0.9d, 0.9d);
         bpTree.insert(1.0d, 0.9d);
+        bpTree.insert(0.01d, 0.9d);
+        bpTree.insert(0.21d, 0.9d);
+     //   bpTree.insert(0.21d, 0.9d);
         
         System.out.println("\n\nTree structure:\n" + bpTree.toString());
         
@@ -492,8 +490,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             bpTree.insert(j, j);
             System.out.println("\n\nTree structure:\n" + bpTree.toString());
         }
-        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
-        System.out.println("Filtered values: " + filteredValues.toString());*/
+        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");*/
+      //  System.out.println("Filtered values: " + filteredValues.toString());
     }
 
 } // End of class BPTree
