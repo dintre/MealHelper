@@ -262,9 +262,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	if(insertionPoint < 0) {
         		insertionPoint = (insertionPoint  * -1) - 1;
         	}
-        	else {
+        	/*else {
         		insertionPoint = insertionPoint + 1;
-        	}
+        	}*/
         	Node insertionNode = children.get(insertionPoint);
         	insertionNode.insert(key, value);
         	
@@ -460,7 +460,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // some value to add to the BPTree
         Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
         
-        bpTree.insert(0.3d, 0.4d);
+       /* bpTree.insert(0.3d, 0.4d);
         bpTree.insert(0.3d, 0.5d);
         bpTree.insert(0.4d, 0.4d);
        bpTree.insert(0.5d, 0.4d);
@@ -472,7 +472,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         bpTree.insert(1.0d, 0.9d);
         bpTree.insert(0.01d, 0.9d);
         bpTree.insert(0.21d, 0.9d);
-     //   bpTree.insert(0.21d, 0.9d);
+        bpTree.insert(0.21d, 0.9d);*/
         
         System.out.println("\n\nTree structure:\n" + bpTree.toString());
         
@@ -483,14 +483,14 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // does not ensure BPTree is implemented correctly
         // just that it functions as a data structure with
         // insert, rangeSearch, and toString() working.
-        /*List<Double> list = new ArrayList<>();
+        List<Double> list = new ArrayList<>();
         for (int i = 0; i < 400; i++) {
             Double j = dd[rnd1.nextInt(4)];
             list.add(j);
             bpTree.insert(j, j);
             System.out.println("\n\nTree structure:\n" + bpTree.toString());
         }
-        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");*/
+        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
       //  System.out.println("Filtered values: " + filteredValues.toString());
     }
 
