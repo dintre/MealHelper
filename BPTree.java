@@ -34,23 +34,23 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     //max keys in a node
     private int maxKeys;
     
-    /**
-     * Public constructor
-     * 
-     * @param branchingFactor 
-     */
-    public BPTree(int branchingFactor) {
-        if (branchingFactor <= 2) {
-            throw new IllegalArgumentException(
-               "Illegal branching factor: " + branchingFactor);
-        }
-        
-        //creates initial node as a leaf
-        root = new LeafNode();
-        this.branchingFactor = branchingFactor;
-        maxKeys = branchingFactor - 1;
-    }
-    
+	    /**
+	     * Public constructor
+	     * 
+	     * @param branchingFactor 
+	     */
+	    public BPTree(int branchingFactor) {
+	        if (branchingFactor <= 2) {
+	            throw new IllegalArgumentException(
+	               "Illegal branching factor: " + branchingFactor);
+	        }
+	        
+	        //creates initial node as a leaf
+	        root = new LeafNode();
+	        this.branchingFactor = branchingFactor;
+	        maxKeys = branchingFactor - 1;
+	    }
+	    
     
     /*
      * (non-Javadoc)
@@ -440,6 +440,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         List<V> rangeSearch(K key, String comparator) {
             // TODO : Complete
+        	List<V> returnList = new ArrayList<V>();
+        	if(keys.size()<=0) {
+        		return returnList;
+        	}
         	int op;
             //what operation to search on
             //0 = greater than or equal to
@@ -463,7 +467,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             }
         	
         	//System.out.println(findPoint + " " + keys.get(0));
-        	List<V> returnList = new ArrayList<V>();
+        	
         	LeafNode foundNode = this;
     		LeafNode currentNode = foundNode;
     		int currentPoint = findPoint;
@@ -474,22 +478,32 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		//and returns blank if it doesn't exist
         		
         		if(keys.size() < (findPoint + 1)) {
-        			if(foundNode.next == null) {
+        			
+        			if((foundNode.keys.get(findPoint-1).compareTo(key)) >= 0) {
+        				findPoint--;
+        			}
+        			else if(foundNode.next == null) {
     					return returnList;
     				}
+        			else {
+        				foundNode = foundNode.next;
+            			findPoint = 0;
+        			}
         			
-        			foundNode = foundNode.next;
-        			findPoint = 0;
         		}
+        		
         		if(foundNode.keys.get(findPoint).compareTo(key) < 0) {
         			findPoint++;
-        			if(findPoint < this.keys.size()-1) {
+        			if((foundNode.keys.get(findPoint).compareTo(key) < 0) && findPoint > this.keys.size()-1) {
         				if(foundNode.next == null) {
         					return returnList;
         				}
         				
-        				foundNode = foundNode.next;
-        				findPoint = 0;
+        				else {
+                			
+            				foundNode = foundNode.next;
+            				findPoint = foundNode.keys.size()-1;
+            				}
         			}
         		}
         		
@@ -704,23 +718,29 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		//and returns blank if it doesn't exist
         		
         		if(keys.size() < (findPoint + 1)) {
-        			if(foundNode.next == null) {
+        			if((foundNode.keys.get(findPoint-1).compareTo(key)) <= 0) {
+        				findPoint--;
+        			}
+        			else if(foundNode.next == null) {
     					return returnList;
     				}
-        			
-        			foundNode = foundNode.next;
-        			findPoint = 0;
+        			else {
+        				foundNode = foundNode.next;
+            			findPoint = 0;
+        			}
         		}
         		
         		if(foundNode.keys.get(findPoint).compareTo(key) > 0) {
         			findPoint--;
-        			if(findPoint > 0)
+        			if((foundNode.keys.get(findPoint).compareTo(key) > 0) && findPoint < 0) {
         				if(foundNode.previous == null) {
         					return returnList;
         				}
-        				
+        				else {
+        			
         				foundNode = foundNode.previous;
         				findPoint = foundNode.keys.size()-1;
+        				}
         			}
         		
         		
@@ -762,9 +782,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         			}
         		}
         	}
+        	
+        }
         	return returnList;
         }
-        
     } // End of class LeafNode
     
     
@@ -798,9 +819,13 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
        bpTree.insert(0.03d, 1.1d);
    //     bpTree.insert(0.21d, 1.2d);
    //    bpTree.insert(0.21d, 1.3d);*/
+        BPTree<Integer, String> calorieTree = new BPTree<>(3);
+
+        //calorieTree.insert(80, "Egg");
+      //  calorieTree.insert(150, "Eggo");
         
-        System.out.println("\n\nTree structure:\n" + bpTree.toString());
-        //System.out.println(bpTree.rangeSearch(0.3d, "<="));
+    //    System.out.println("\n\nTree structure:\n" + calorieTree.toString());
+    //    System.out.println(calorieTree.rangeSearch(100, ">="));
         
 
         // build an ArrayList of those value and add to BPTree also
@@ -809,7 +834,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // does not ensure BPTree is implemented correctly
         // just that it functions as a data structure with
         // insert, rangeSearch, and toString() working.
-        List<Double> list = new ArrayList<>();
+       /* List<Double> list = new ArrayList<>();
         for (int i = 0; i < 400; i++) {
             Double j = dd[rnd1.nextInt(4)];
             list.add(j);
@@ -818,6 +843,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
         System.out.println("Filtered values: " + filteredValues.toString());
+    }*/
     }
-
 } // End of class BPTree
