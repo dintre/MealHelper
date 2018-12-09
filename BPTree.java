@@ -731,8 +731,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		}
         		
         		if(foundNode.keys.get(findPoint).compareTo(key) > 0) {
-        			findPoint++;
-        			if((foundNode.keys.get(findPoint).compareTo(key) < 0) && findPoint > this.keys.size()-1) {
+        			findPoint--;
+        			if((foundNode.keys.get(findPoint).compareTo(key) > 0) && findPoint >= 0) {
         				if(foundNode.next == null) {
         					return returnList;
         				}
