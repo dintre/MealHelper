@@ -714,7 +714,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	
         	if(comparator.contentEquals("<=")) {
         		
-        		//if key at the foundNode is smaller than the given key, this checks the next key
+        		//if key at the foundNode is bigger than the given key, this checks the previous key
         		//and returns blank if it doesn't exist
         		
         		if(keys.size() < (findPoint + 1)) {
@@ -731,18 +731,19 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		}
         		
         		if(foundNode.keys.get(findPoint).compareTo(key) > 0) {
-        			findPoint--;
-        			if((foundNode.keys.get(findPoint).compareTo(key) > 0) && findPoint < 0) {
-        				if(foundNode.previous == null) {
+        			findPoint++;
+        			if((foundNode.keys.get(findPoint).compareTo(key) < 0) && findPoint > this.keys.size()-1) {
+        				if(foundNode.next == null) {
         					return returnList;
         				}
+        				
         				else {
-        			
-        				foundNode = foundNode.previous;
-        				findPoint = foundNode.keys.size()-1;
-        				}
+                			
+            				foundNode = foundNode.next;
+            				findPoint = foundNode.keys.size()-1;
+            				}
         			}
-        		
+        		}
         		
         		currentNode = foundNode;
         		currentPoint = findPoint + 1;
@@ -783,7 +784,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		}
         	}
         	
-        }
+        
         	return returnList;
         }
     } // End of class LeafNode
@@ -796,7 +797,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * 
      * @param args
      */
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
 
@@ -819,13 +820,13 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
        bpTree.insert(0.03d, 1.1d);
    //     bpTree.insert(0.21d, 1.2d);
    //    bpTree.insert(0.21d, 1.3d);*/
-        BPTree<Integer, String> calorieTree = new BPTree<>(3);
+       /* BPTree<Integer, String> calorieTree = new BPTree<>(3);
 
-        //calorieTree.insert(80, "Egg");
-      //  calorieTree.insert(150, "Eggo");
+        calorieTree.insert(80, "Egg");
+        calorieTree.insert(150, "Eggo");
         
-    //    System.out.println("\n\nTree structure:\n" + calorieTree.toString());
-    //    System.out.println(calorieTree.rangeSearch(100, ">="));
+        System.out.println("\n\nTree structure:\n" + calorieTree.toString());
+        System.out.println(calorieTree.rangeSearch(150, "=="));/*
         
 
         // build an ArrayList of those value and add to BPTree also
@@ -843,6 +844,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
         List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
         System.out.println("Filtered values: " + filteredValues.toString());
-    }*/
     }
+    }*/
 } // End of class BPTree
