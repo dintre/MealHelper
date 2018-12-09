@@ -3,9 +3,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 /**
  * This class represents the backend for managing all 
@@ -16,7 +18,7 @@ import java.util.Scanner;
 public class FoodData implements FoodDataADT<Food> {
     
     // List of all the food items.
-    private List<Food> FoodList;
+    private List<Food> foodList;
 
     // Map of nutrients and their corresponding index
     private HashMap<String, BPTree<Double, Food>> indexes;
@@ -27,7 +29,7 @@ public class FoodData implements FoodDataADT<Food> {
      */
     public FoodData() {
         // TODO : Complete
-    	FoodList = new ArrayList<Food>();
+    	foodList = new ArrayList<Food>();
     }
     
     
@@ -71,7 +73,7 @@ public class FoodData implements FoodDataADT<Food> {
 				double protein = Double.parseDouble(commaSplitter[11]);
 
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
-				FoodList.add(newFood);
+				foodList.add(newFood);
 
 			} // while reading lines
 			
@@ -104,16 +106,16 @@ public class FoodData implements FoodDataADT<Food> {
     	ArrayList<Food> returnList = new ArrayList<Food>();
     	
     	// if the list of food list is empty, return empty list
-    	if(FoodList.isEmpty()) {
+    	if(foodList.isEmpty()) {
     		return returnList;
     	}
     	
     	// loop through foodList food names and check if name contains search string
-    	for(int i = 0; i < FoodList.size(); i++) {
-    		String foodName = FoodList.get(i).getName().toLowerCase();
+    	for(int i = 0; i < foodList.size(); i++) {
+    		String foodName = foodList.get(i).getName().toLowerCase();
     		if(foodName.contains(substring)) {
-    			returnList.add(FoodList.get(i));
-    			System.out.println(FoodList.get(i).getName()); // TODO - remove test code
+    			returnList.add(foodList.get(i));
+    			System.out.println(foodList.get(i).getName()); // TODO - remove test code
     		}
     	}
 
@@ -137,7 +139,7 @@ public class FoodData implements FoodDataADT<Food> {
     @Override
     public void addFood(Food Food) {
         // TODO : Complete?
-    	FoodList.add(Food);
+    	foodList.add(Food);
     }
 
     /*
@@ -148,7 +150,30 @@ public class FoodData implements FoodDataADT<Food> {
     public List<Food> getAllFoods() {
         // TODO : Complete
     	// TODO - should this return just the food names? Or have a separate method for that?
-    	return FoodList;
+    	/*
+    	List<Food> returnList = foodList.stream()
+    			.map(mapper)
+    			.collect(Collectors.toList());
+    	*/
+    	//foodList.sort(Comparator.comparing(Food::getName));
+    	
+    	foodList.sort(new Comparator<Food>() { // anonymous class
+    		@Override
+    		public int compare(Food food1,Food food2) {
+    			if(food1.getName().toLowerCase().equals(food2.getName().toLowerCase())) {
+    				return 0;
+    			}
+    			else if(food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase())  < 0 ){
+    				return -1;
+    			}
+    			else {
+    				return 1;
+    			}
+    		} // compare() overridden
+    		
+    	});
+    	
+    	return foodList;
     }
 
 
@@ -162,8 +187,8 @@ public class FoodData implements FoodDataADT<Food> {
 			writer = new PrintStream(saveFile); // create the writer
 			
 			// loop through the current arraylist of food
-			for(int i = 0; i < FoodList.size(); i++) {
-				Food current = FoodList.get(i);
+			for(int i = 0; i < foodList.size(); i++) {
+				Food current = foodList.get(i);
 				// write the line
 				writer.println(current.getId() + "," + current.getName()
 				+ ",calories," + current.getCalories() + ",fat," + 
@@ -192,7 +217,7 @@ public class FoodData implements FoodDataADT<Food> {
 
 	// TODO - do we need this? Or can we make the original one work on its own
 	public ArrayList<String> getFoodNames(){
-    	ArrayList<Food> tempList = (ArrayList<Food>) FoodList;
+    	ArrayList<Food> tempList = (ArrayList<Food>) foodList;
     	
     	ArrayList<String> returnList = new ArrayList<String>();
     	
@@ -210,7 +235,7 @@ public class FoodData implements FoodDataADT<Food> {
 		foods.loadFoods("foodItems.csv");
 		
 		System.out.println("Food list is this: ");
-		System.out.println(foods.FoodList);
+		System.out.println(foods.foodList);
 		
 		System.out.println();
 		System.out.println();
