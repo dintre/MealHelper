@@ -22,7 +22,6 @@ import java.util.Random;
  * @param <V> value - expect a user-defined type that stores all data for a food item
  */
 
-//TODO: 2 and 3 should not be split; maybe change how nodes get divided up?
 public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 
     // Root of the tree
@@ -31,13 +30,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
     // Branching factor is the number of children nodes 
     // for internal nodes of the tree
     private int branchingFactor;
-    
-    //minimum children for non-root internal node and minimum keys for leafs
-    private int floor;
-    
+        
     //max keys in a node
     private int maxKeys;
-    
     
     /**
      * Public constructor
@@ -49,11 +44,11 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             throw new IllegalArgumentException(
                "Illegal branching factor: " + branchingFactor);
         }
+        
+        //creates initial node as a leaf
         root = new LeafNode();
         this.branchingFactor = branchingFactor;
-        floor = branchingFactor/2;
         maxKeys = branchingFactor - 1;
-        // TODO : Complete
     }
     
     
@@ -63,12 +58,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      */
     @Override
     public void insert(K key, V value) {
-        // TODO : Complete
     	if (key==null) {
     		throw new IllegalArgumentException();
     	}
-    	
-    	//LeafNode leaf = this.find(key);
     	
     	root.insert(key, value);
 
@@ -84,8 +76,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             !comparator.contentEquals("==") && 
             !comparator.contentEquals("<=") )
             return new ArrayList<V>();
-        // TODO : Complete
-        return null;
+
+        List<V> returnList = root.rangeSearch(key, comparator);
+        
+        return returnList;
     }
     
     
@@ -217,26 +211,10 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         K getFirstLeafKey() {
             // TODO : Complete
-        /*	Node current = this;
-        	while(current instanceof BPTree.InternalNode) {
-        		Node first = children.get(0);
-        		K firstK = first.keys.get(0);
-            	Node compare;
-            	K compareK;
-            	for(int i = 1; i < children.size(); i++) {
-            		compare = children.get(i);
-            		compareK = compare.keys.get(0);
-            		if(compareK.compareTo(firstK) < 1) {
-            			first = compare;
-            			firstK = compareK;
-            		}
-            	}
-            	
-            	current = first;
-        	}*/
         	K firstKey = children.get(0).getFirstLeafKey();
             return firstKey;
         }
+        
         
         /**
          * (non-Javadoc)
@@ -269,11 +247,28 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	insertionNode.insert(key, value);
         	
         	if(insertionNode.isOverflow()) {
+        		
+        		//splits the overfilled insertion node
         		Node newKid = insertionNode.split();
+        		
+        		//finds the position of the new key node
         		int newKidPlace = Collections.binarySearch(keys, newKid.getFirstLeafKey());
         		if(newKidPlace < 0) {
         			newKidPlace = (1 + newKidPlace)  * -1;
             	}
+        		
+        		//finds the position of the insertion node
+        		int currentPlace = Collections.binarySearch(keys, insertionNode.getFirstLeafKey());
+        		if(currentPlace < 0) {
+        			currentPlace = (1 + currentPlace)  * -1;
+            	}
+        		
+        		//puts the new kid one forward if its in an equal position as the insertion node and its first LeafKey is bigger
+        		if(newKidPlace == currentPlace && (insertionNode.getFirstLeafKey().compareTo(newKid.getFirstLeafKey()) >= 0)) {
+        			newKidPlace++;
+        		}
+        	
+        		
         		this.keys.add(newKidPlace, newKid.getFirstLeafKey());
         		this.children.add(newKidPlace + 1, newKid);
         		if(newKid instanceof BPTree.InternalNode) {
@@ -301,7 +296,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         Node split() {
             // TODO : Complete
-        	int midpoint = keys.size() / 2;
+        	int midpoint = ( keys.size()) / 2;
         	int sibKeys = keys.size() - midpoint;
         	InternalNode sibling= new InternalNode();
         	int spot = midpoint;
@@ -320,8 +315,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          * @see BPTree.Node#rangeSearch(java.lang.Comparable, java.lang.String)
          */
         List<V> rangeSearch(K key, String comparator) {
+        	int searchPoint = Collections.binarySearch(keys,key);
+        	if(searchPoint < 0) {
+        		searchPoint = (searchPoint  * -1) - 1;
+        	}
             // TODO : Complete
-            return null;
+            return (children.get(searchPoint).rangeSearch(key, comparator)); 
         }
     
     } // End of class InternalNode
@@ -392,8 +391,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		insertionPoint = (1 + insertionPoint)  * -1;
         	}
         	
-        	keys.add(insertionPoint,key);
-			values.add(insertionPoint,value);
+        	
+    		this.keys.add(insertionPoint,key);
+    		this.values.add(insertionPoint,value);
         	
         	if(root.isOverflow()) {
         		Node newSib = split();
@@ -412,7 +412,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         Node split() {
             // TODO : Complete
-        	int midpoint = keys.size() / 2;
+        	int midpoint = (keys.size()) / 2 ;
         	int sibKeys = keys.size() - midpoint;
         	LeafNode sibling= new LeafNode();
         	int spot = midpoint;
@@ -425,6 +425,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	}
         	
         	sibling.next = this.next;
+        	if(this.next != null) {
+        	this.next.previous = sibling;
+        	}
         	sibling.previous = this;
         	this.next = sibling;
         	
@@ -437,7 +440,329 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
          */
         List<V> rangeSearch(K key, String comparator) {
             // TODO : Complete
-            return null;
+        	int op;
+            //what operation to search on
+            //0 = greater than or equal to
+            //1 = equal to
+            //2 = less than or equal to
+        	
+        	int findPoint = Collections.binarySearch(keys,key);
+        	if(findPoint < 0) {
+        		findPoint = (findPoint  * -1) - 1;
+        	}
+        	
+        	if(comparator.contentEquals(">=")) {
+        		op = 0;
+            }
+            else if(comparator.contentEquals("==")) {
+            	op = 1;
+            }
+            
+            else {
+            	op = 2;
+            }
+        	
+        	//System.out.println(findPoint + " " + keys.get(0));
+        	List<V> returnList = new ArrayList<V>();
+        	LeafNode foundNode = this;
+    		LeafNode currentNode = foundNode;
+    		int currentPoint = findPoint;
+    		
+        	if(comparator.contentEquals(">=")) {
+        		
+        		//if key at the foundNode is smaller than the given key, this checks the next key
+        		//and returns blank if it doesn't exist
+        		
+        		if(keys.size() < (findPoint + 1)) {
+        			if(foundNode.next == null) {
+    					return returnList;
+    				}
+        			
+        			foundNode = foundNode.next;
+        			findPoint = 0;
+        		}
+        		if(foundNode.keys.get(findPoint).compareTo(key) < 0) {
+        			findPoint++;
+        			if(findPoint < this.keys.size()-1) {
+        				if(foundNode.next == null) {
+        					return returnList;
+        				}
+        				
+        				foundNode = foundNode.next;
+        				findPoint = 0;
+        			}
+        		}
+        		
+        		currentNode = foundNode;
+        		currentPoint = findPoint - 1;
+        		
+        		if(currentPoint < 0 && currentNode.previous != null) {
+        			currentNode = currentNode.previous;
+        			currentPoint = currentNode.keys.size()-1;
+        			
+        		}
+        		
+        		while(currentPoint >= 0 && currentNode.keys.get(currentPoint).compareTo(key) >=0) {
+        			foundNode = currentNode;
+        			findPoint = currentPoint;
+        			
+        			currentPoint--;
+        			
+        			if(currentPoint < 0 && currentNode.previous != null) {
+            			currentNode = currentNode.previous;
+            			currentPoint = currentNode.keys.size()-1;
+        			
+        			}
+        		}
+        		
+        		currentNode = foundNode;
+        		currentPoint = findPoint;
+        		
+        		while(currentPoint <= currentNode.keys.size()-1) {
+        			returnList.add(currentNode.values.get(currentPoint));
+        			currentPoint++;
+        			
+        			if(currentPoint > currentNode.keys.size()-1) {
+        				if(currentNode.next != null) {
+        					currentNode = currentNode.next;
+            				currentPoint = 0;
+        				}
+        					
+        			}
+        		}
+        		
+        	}
+        	
+        	if(op == 1) {
+        		
+        		int spot;
+        		int quit = 0;
+        		
+        		
+        		//if the placement is outside of the current node or if the key at the point found is not equivalent to the key itself,
+        		//this will look forwards and backwards to check for it
+        		if((keys.size() < (findPoint + 1)) || !keys.get(findPoint).equals(key)) {
+        			
+        			while(quit == 0) {
+        				
+        				//checks the end of the previous node for the key
+        				if(findPoint <= 0) {
+        					currentNode = currentNode.previous;
+        					if(currentNode != null) {
+        						currentPoint = currentNode.keys.size()-1;
+        						if(currentNode.keys.get(currentPoint).equals(key)) {
+        							foundNode = currentNode;
+        							findPoint = currentPoint;
+        							break;
+        						}
+        					        					        					
+        					}
+        				}
+        			
+        				//checks the key before the sorted point for the key
+        				if(findPoint < 0) {
+        					currentPoint = findPoint - 1;
+        					if(keys.get(currentPoint).equals(key)) {
+        						foundNode = currentNode;
+        						findPoint = currentPoint;
+        						break;
+        					}
+        				}
+        			
+        				//checks the key after the sorted point for the key
+        				if(findPoint < keys.size()-1) {
+        					currentPoint = findPoint + 1;
+        					if(keys.get(currentPoint).equals(key)) {
+        						foundNode = currentNode;
+        						findPoint = currentPoint;
+        						break;
+        					}
+        				}
+        				
+        				//checks the beginning of the next node for the key
+        				if(findPoint >= keys.size()-1) {
+        					currentNode = currentNode.next;
+        					if(currentNode != null) {
+        						currentPoint = 0;
+        						if(currentNode.keys.get(currentPoint).equals(key)) {
+        							foundNode = currentNode;
+        							findPoint = currentPoint;
+        							break;
+        						} 					        					
+        					}
+        				}
+        			
+        				
+        				quit = 1;
+        			}
+        		}
+        		
+        		if(quit == 1) {
+        			return returnList;
+        		}
+        		
+        		returnList.add(foundNode.values.get(findPoint));
+        		currentNode = foundNode;
+        		currentPoint = findPoint;
+        		
+        		//checks before the found point for other keys that match
+        		if(findPoint == 0 && foundNode.previous!=null) {
+        			currentNode = foundNode.previous;
+        			currentPoint = currentNode.keys.size() - 1;
+        			if(currentNode.keys.get(currentPoint).equals(key)) {
+						returnList.add(currentNode.values.get(currentPoint));
+					}
+        			
+        			else {
+        				quit = 1;
+        			}
+        		}
+        		
+        		currentPoint = currentPoint - 1;
+        		
+        		if(quit == 0 && currentPoint > 0) {
+        			while(currentNode.keys.get(currentPoint).equals(key)) {
+        				while(currentPoint >= 0) {
+        				
+        					if(!(currentNode.keys.get(currentPoint).equals(key))) {
+        						quit = 1;
+        						break;
+        					}
+        					else {
+        						returnList.add(currentNode.values.get(currentPoint));  				
+        					}
+
+        					currentPoint--;
+        				}
+        			
+        				if(quit == 1) {
+        					break;
+        				}
+        			
+        				currentNode = currentNode.previous;
+        				if(currentNode == null) {
+        					break;
+        				}
+        				currentPoint = currentNode.keys.size() - 1;
+        			}
+        		}
+        		
+        		currentNode = foundNode;
+        		currentPoint = findPoint;
+        		quit = 0;
+        		
+        		//checks after the found point for other keys that match
+        		if(findPoint == (foundNode.keys.size()-1) && foundNode.next!=null) {
+        			currentNode = foundNode.next;
+        			currentPoint = 0;
+        			if(currentNode.keys.get(currentPoint).equals(key)) {
+						returnList.add(currentNode.values.get(currentPoint));
+					}
+        			
+        			else {
+        				quit = 1;
+        			}
+        		}
+        		
+        		currentPoint = currentPoint + 1;
+        		
+        		
+        		if(quit == 0 && currentPoint < currentNode.keys.size()) {
+        			while(currentNode.keys.get(currentPoint).equals(key)) {
+        				while(currentPoint < currentNode.keys.size()) {
+        				
+        					if(!(currentNode.keys.get(currentPoint).equals(key))) {
+        						quit = 1;
+        						break;
+        					}
+        					else {
+        						returnList.add(currentNode.values.get(currentPoint));  				
+        					}
+
+        					currentPoint++;
+        				}
+        			
+        				if(quit == 1) {
+        					break;
+        				}
+        			
+        				currentNode = currentNode.next;
+        				if(currentNode == null) {
+        					break;
+        				}
+        				currentPoint = 0;
+        			}
+        		}
+        		
+
+        		
+        	}
+        	
+        	if(comparator.contentEquals("<=")) {
+        		
+        		//if key at the foundNode is smaller than the given key, this checks the next key
+        		//and returns blank if it doesn't exist
+        		
+        		if(keys.size() < (findPoint + 1)) {
+        			if(foundNode.next == null) {
+    					return returnList;
+    				}
+        			
+        			foundNode = foundNode.next;
+        			findPoint = 0;
+        		}
+        		
+        		if(foundNode.keys.get(findPoint).compareTo(key) > 0) {
+        			findPoint--;
+        			if(findPoint > 0)
+        				if(foundNode.previous == null) {
+        					return returnList;
+        				}
+        				
+        				foundNode = foundNode.previous;
+        				findPoint = foundNode.keys.size()-1;
+        			}
+        		
+        		
+        		currentNode = foundNode;
+        		currentPoint = findPoint + 1;
+        		
+        		if(currentPoint > foundNode.keys.size()-1 && currentNode.next != null) {
+        			currentNode = currentNode.next;
+        			currentPoint = 0;
+        			
+        		}
+        		
+        		while(currentPoint <= currentNode.keys.size() -1 && currentNode.keys.get(currentPoint).compareTo(key) <=0) {
+        			foundNode = currentNode;
+        			findPoint = currentPoint;
+        			
+        			currentPoint++;
+        			
+        			if(currentPoint > currentNode.keys.size() -1 && currentNode.next != null) {
+            			currentNode = currentNode.next;
+            			currentPoint = 0;
+        			
+        			}
+        		}
+        		
+        		currentNode = foundNode;
+        		currentPoint = findPoint;
+        		
+        		while(currentPoint >=0) {
+        			returnList.add(currentNode.values.get(currentPoint));
+        			currentPoint--;
+        			
+        			if(currentPoint < 0) {
+        				if(currentNode.previous != null) {
+        					currentNode = currentNode.previous;
+            				currentPoint = currentNode.keys.size() -1;
+        				}
+        					
+        			}
+        		}
+        	}
+        	return returnList;
         }
         
     } // End of class LeafNode
@@ -460,21 +785,22 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         // some value to add to the BPTree
         Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
         
-       /* bpTree.insert(0.3d, 0.4d);
-        bpTree.insert(0.3d, 0.5d);
-        bpTree.insert(0.4d, 0.4d);
+       /* bpTree.insert(0.3d, 0.1d);
+        bpTree.insert(0.2d, 0.2d);
+        bpTree.insert(0.3d, 0.3d);
        bpTree.insert(0.5d, 0.4d);
-      bpTree.insert(0.6d, 0.4d);
-        bpTree.insert(0.1d, 0.4d);
-       bpTree.insert(0.8d, 0.4d);
-        bpTree.insert(0.2d, 0.8d);
-        bpTree.insert(0.9d, 0.9d);
-        bpTree.insert(1.0d, 0.9d);
-        bpTree.insert(0.01d, 0.9d);
-        bpTree.insert(0.21d, 0.9d);
-        bpTree.insert(0.21d, 0.9d);*/
+      bpTree.insert(0.3d, 0.5d);
+      bpTree.insert(0.3d, 0.6d);
+   bpTree.insert(0.1d, 0.7d);
+        bpTree.insert(0.3d, 0.8d);
+       bpTree.insert(0.6d, 0.9d);
+       bpTree.insert(1.0d, 1.0d);
+       bpTree.insert(0.03d, 1.1d);
+   //     bpTree.insert(0.21d, 1.2d);
+   //    bpTree.insert(0.21d, 1.3d);*/
         
         System.out.println("\n\nTree structure:\n" + bpTree.toString());
+        //System.out.println(bpTree.rangeSearch(0.3d, "<="));
         
 
         // build an ArrayList of those value and add to BPTree also
@@ -491,7 +817,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             System.out.println("\n\nTree structure:\n" + bpTree.toString());
         }
         List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
-      //  System.out.println("Filtered values: " + filteredValues.toString());
+        System.out.println("Filtered values: " + filteredValues.toString());
     }
 
 } // End of class BPTree
