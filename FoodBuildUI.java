@@ -94,12 +94,12 @@ public class FoodBuildUI extends Application {
 	    headingbox.setStyle("-fx-background-color: #4527A0;");
 	    // left section 
 	    VBox foodBox = new VBox();
-	    foodBox.setPadding(new Insets (20, 80, 20, 80));
+	    foodBox.setPadding(new Insets (10, 70, 10, 70));
 	    foodBox.setSpacing(10);
 	    foodBox.setStyle("-fx-background-color: #B39DDB;");
 	    // right section
 	    VBox mealBox = new VBox();
-	    mealBox.setPadding(new Insets (20, 80, 20, 80));
+	    mealBox.setPadding(new Insets (10, 70, 10, 70));
 	    mealBox.setSpacing(10);
 	    mealBox.setStyle("-fx-background-color: #B39DDB;");
 		
@@ -117,11 +117,11 @@ public class FoodBuildUI extends Application {
 	    // title label
 	    Label foodLabel = new Label();
 	    foodLabel.setText("Food");
-	    foodLabel.setPadding(new Insets(10));
-	    foodLabel.setFont(Font.font("Cambria", 24));
+	    foodLabel.setPadding(new Insets(5));
+	    foodLabel.setFont(Font.font("Cambria", 18));
 	    // food view
 	    ListView<Food> foodView = new ListView<Food>(food);
-	    foodView.setPrefSize(400, 300);
+	    foodView.setPrefSize(400, 260);
 	    // use to store object but display food's name
 	    foodView.setCellFactory(param -> new ListCell<Food>() {
 	    	@Override
@@ -142,42 +142,29 @@ public class FoodBuildUI extends Application {
 	    // search field by name
 	    TextField foodNameSearch = new TextField();
 	    foodNameSearch.setPromptText("<name of food>");  
-	    // run food query button
+        // run food query button
 	    Button runFoodQuery = new Button("Filter Food");
 	    runFoodQuery.setPrefSize(120, 20);
-	    runFoodQuery.setOnAction(new EventHandler<ActionEvent>() {
-	    	@Override
-	    	public void handle(ActionEvent event) {
-	    		String userInput = foodNameSearch.getText();
-	    		
-	    	}	
-	    }); // action for runFoodQuery button
 	    // label for nutrient text field
 	    Label nutrientFilterLabel = new Label("Filter by a nutrient rule");
 	    // search field by nutrient
 	    TextField nutrientSearch = new TextField();
 	    nutrientSearch.setPromptText("<nutrient> <operator> <value>");
-
-	    // run food query button
+	    // run nutrient query button
 	    Button runNutrientQuery = new Button("Filter Food");
 	    runNutrientQuery.setPrefSize(120, 20);
-	    runNutrientQuery.setOnAction(new EventHandler<ActionEvent>() {
-	    	@Override
-	    	public void handle(ActionEvent event) {
-	    		String userInput = nutrientSearch.getText();
-	    		
-	    	}
-	    }); // action for runNutrientQuery button
 	    // clears all current search filters, so full food list is displayed
 	    Button clearFilters = new Button("Clear Search Filters");
 	    clearFilters.setPrefSize(120, 20);
-	    clearFilters.setOnAction(new EventHandler<ActionEvent>() {  
-            @Override
-            public void handle(ActionEvent event) {
-            	food.clear();
-            	food.addAll(foodList.getAllFoods());
-            }
-	    } ); // clear filters button action
+
+	    // list of currently active filters
+	    ObservableList<String> currentFilterList = FXCollections.observableArrayList();
+	    // filter label
+	    Label filterLabel = new Label("Current Search Filters:");
+	    filterLabel.setPadding(new Insets(2));
+	    // filter view
+	    ListView<String> filterView = new ListView<String>(currentFilterList);
+	    filterView.setPrefSize(400, 80);
 	    
 	    // end of filtering -------------------------------------------------------------
 	    // create food button
@@ -464,23 +451,52 @@ public class FoodBuildUI extends Application {
                 }); // action event of generateFood button
             }
         }); // create food button action
+
+	    // food query button action
+	    runFoodQuery.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		String userInput = foodNameSearch.getText();
+	    		currentFilterList.clear();
+	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
+	    	}	
+	    }); // action for runFoodQuery button
+	    // nutrient query button action
+	    runNutrientQuery.setOnAction(new EventHandler<ActionEvent>() {
+	    	@Override
+	    	public void handle(ActionEvent event) {
+	    		String userInput = nutrientSearch.getText();
+	    		currentFilterList.clear();
+	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
+	    	}
+	    }); // action for runNutrientQuery button	    
+	    // clearFilters button action
+	    clearFilters.setOnAction(new EventHandler<ActionEvent>() {  
+            @Override
+            public void handle(ActionEvent event) {
+            	food.clear();
+            	food.addAll(foodList.getAllFoods());
+            	currentFilterList.clear();
+            	foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
+            }
+	    } ); // clear filters button action
         
 	    // add all foodBox (left pane)
 	    foodBox.getChildren().addAll(foodLabel, foodView, createFood, foodFilterLabel,
 	    		foodNameSearch, runFoodQuery, nutrientFilterLabel, nutrientSearch,
-	    		runNutrientQuery, clearFilters);
+	    		runNutrientQuery);
 	    // end of left food section ---------------------------------------------------------------------------------------------------------------
 
 	    // right section - meal list  --------------------------------------------------------------------------------------------------------------
 	    Label mealLabel = new Label();
 	    mealLabel.setText("Meals");
-	    mealLabel.setPadding(new Insets(10));
-	    mealLabel.setFont(Font.font("Cambria", 24));
+	    mealLabel.setPadding(new Insets(5));
+	    mealLabel.setFont(Font.font("Cambria", 18));
 	    // list of meals
 	    ObservableList<Meal> meals = FXCollections.observableArrayList();
 	    meals.addAll(mealsList); // add from the list variable of this class
 	    ListView<Meal> mealView = new ListView<Meal>(meals);
-	    mealView.setPrefSize(400, 300);
+	    mealView.setPrefSize(400, 260);
 	    // use to store object but display meal's name
 	    mealView.setCellFactory(param -> new ListCell<Meal>() {
 	    	@Override
