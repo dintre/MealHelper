@@ -2,6 +2,7 @@
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observable;
 import java.util.Scanner;
@@ -458,6 +459,9 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
 	    		currentFilterList.clear();
+	    		food.clear();
+	    		food.addAll(foodList.filterByName(userInput));
+	    		
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    	}	
 	    }); // action for runFoodQuery button
@@ -467,6 +471,9 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		String userInput = nutrientSearch.getText();
 	    		currentFilterList.clear();
+	    		food.clear();
+	    		List<String> ruleList= Arrays.asList(userInput);
+	    		food.addAll(foodList.filterByNutrients(ruleList));
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    	}
 	    }); // action for runNutrientQuery button	    

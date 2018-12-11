@@ -25,6 +25,8 @@ public class FoodData implements FoodDataADT<Food> {
     
     // Food name tree
 	BPTree<String,Food> nameTree;
+	// Calories tree
+	BPTree<Double,Food> caloriesTree;
     
     /**
      * Public constructor
@@ -38,8 +40,7 @@ public class FoodData implements FoodDataADT<Food> {
     	
     	// BPTrees
     	nameTree = new BPTree<String,Food>(3);
-    	// Calories tree
-    	BPTree<Double,Food> caloriesTree = new BPTree<Double,Food>(3);
+    	caloriesTree = new BPTree<Double,Food>(3);
     	// carbohydrate tree
     	BPTree<Double,Food> carbohydrateTree = new BPTree<Double,Food>(3);
     	// fat tree
@@ -96,9 +97,10 @@ public class FoodData implements FoodDataADT<Food> {
 				
 				// adding to trees
 				nameTree.insert(name,newFood);
+				caloriesTree.insert(calories, newFood);
 
 			} // while reading lines
-			
+			indexes.put("calories", caloriesTree);
 			
 		} // try
 
@@ -125,6 +127,8 @@ public class FoodData implements FoodDataADT<Food> {
     public List<Food> filterByName(String substring) {
     	substring = substring.toLowerCase();
     	// create list to be returned
+    	
+    	
     	ArrayList<Food> returnList = new ArrayList<Food>();
     	
     	// if the list of food list is empty, return empty list
@@ -137,12 +141,18 @@ public class FoodData implements FoodDataADT<Food> {
     		String foodName = foodList.get(i).getName().toLowerCase();
     		if(foodName.contains(substring)) {
     			returnList.add(foodList.get(i));
-    			System.out.println(foodList.get(i).getName()); // TODO - remove test code
     		}
     	}
-
+    	
+        
+        List<Food> tempList = nameTree.rangeSearch(substring, "==");
+        System.out.println(tempList);
+        
+        
+        
         return returnList;
-    }
+
+    } // filterByName()
 
     /*
      * (non-Javadoc)
@@ -155,16 +165,23 @@ public class FoodData implements FoodDataADT<Food> {
         //private HashMap<String, BPTree<Double, Food>> indexes;
     	// "calories >= 50"
     	
+    	//ArrayList<String> ruleList = (ArrayList<String>) rules;
+    	//List<String> ruleList = rules;
     	
-    	indexes.get(arg0);
+    	String [] splitRule = rules.get(0).split(" ");
+    	System.out.println(splitRule); // TODO - remove this test code
+    	String nutrientType = splitRule[0];
+    	String comparator = splitRule[1];
+    	Double value = Double.parseDouble(splitRule[2]);
+    	BPTree<Double, Food> calorTree = indexes.get(nutrientType);
+    	
+    	//System.out.println(calorTree.rangeSearch(value, comparator));
     	
     	
     	
     	
     	
-    	
-    	
-        return null;
+        return calorTree.rangeSearch(value, comparator);
     }
 
     /*
