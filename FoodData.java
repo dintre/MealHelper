@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +29,14 @@ public class FoodData implements FoodDataADT<Food> {
 	BPTree<String,Food> nameTree;
 	// Calories tree
 	BPTree<Double,Food> caloriesTree;
-    
+    // Carbohydrate tree
+    BPTree<Double,Food> carbohydrateTree;
+    // Fat tree
+    BPTree<Double,Food> fatTree;
+    // Fiber tree
+    BPTree<Double,Food> fiberTree;
+    // Protein tree
+    BPTree<Double,Food> proteinTree;
     /**
      * Public constructor
      */
@@ -42,13 +51,13 @@ public class FoodData implements FoodDataADT<Food> {
     	nameTree = new BPTree<String,Food>(3);
     	caloriesTree = new BPTree<Double,Food>(3);
     	// carbohydrate tree
-    	BPTree<Double,Food> carbohydrateTree = new BPTree<Double,Food>(3);
+    	carbohydrateTree = new BPTree<Double,Food>(3);
     	// fat tree
-    	BPTree<Double,Food> fatTree = new BPTree<Double,Food>(3);
+    	fatTree = new BPTree<Double,Food>(3);
     	// fiber tree
-    	BPTree<Double,Food> fiberTree = new BPTree<Double,Food>(3);
+    	fiberTree = new BPTree<Double,Food>(3);
     	// protein tree
-    	BPTree<Double,Food> proteinTree = new BPTree<Double,Food>(3);
+    	proteinTree = new BPTree<Double,Food>(3);
     	
     } // constructor
     
@@ -98,10 +107,17 @@ public class FoodData implements FoodDataADT<Food> {
 				// adding to trees
 				nameTree.insert(name,newFood);
 				caloriesTree.insert(calories, newFood);
+                carbohydrateTree.insert(carbs, newFood);
+                fatTree.insert(fat, newFood);;
+                fiberTree.insert(fiber, newFood);
+                proteinTree.insert(protein, newFood);
 
 			} // while reading lines
 			indexes.put("calories", caloriesTree);
-			
+            indexes.put("carbohydrates", carbohydrateTree);
+            indexes.put("fat", fatTree);
+            indexes.put("fiber", fiberTree);
+            indexes.put("protein", proteinTree);
 		} // try
 
 		catch (FileNotFoundException e) { // catch when the file isn't found
@@ -167,21 +183,26 @@ public class FoodData implements FoodDataADT<Food> {
     	
     	//ArrayList<String> ruleList = (ArrayList<String>) rules;
     	//List<String> ruleList = rules;
-    	
-    	String [] splitRule = rules.get(0).split(" ");
-    	System.out.println(splitRule); // TODO - remove this test code
-    	String nutrientType = splitRule[0];
-    	String comparator = splitRule[1];
-    	Double value = Double.parseDouble(splitRule[2]);
-    	BPTree<Double, Food> calorTree = indexes.get(nutrientType);
-    	
-    	//System.out.println(calorTree.rangeSearch(value, comparator));
-    	
-    	
-    	
-    	
-    	
-        return calorTree.rangeSearch(value, comparator);
+        int numRules = rules.size();
+        ArrayList<List<Food>> tempList = new ArrayList<List<Food>>();
+        List<Food> tempCurrentList = new ArrayList<Food>();
+        for (int i = 0;i<numRules;i++) {
+            String [] splitRule = rules.get(i).split(" ");
+            String nutrientType = splitRule[0];
+            String comparator = splitRule[1];
+            Double value = Double.parseDouble(splitRule[2]);
+            BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
+            tempCurrentList = nutrientTree.rangeSearch(value, comparator);
+            tempList.add(tempCurrentList);
+        } // for
+        List<Food> finalList = new ArrayList<Food>();
+        finalList.addAll(tempList.get(0));
+        for (ListIterator<List<Food>> iter = tempList.listIterator(0); iter.hasNext(); ) {
+            finalList.retainAll(iter.next());
+        }
+
+        return finalList;
+        //return calorTree.rangeSearch(value, comparator);
     }
 
     /*

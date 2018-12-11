@@ -41,6 +41,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToolBar;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -65,6 +66,7 @@ public class FoodBuildUI extends Application {
 	
 	static ObservableList<String> names = FXCollections.observableArrayList();
 	public ArrayList<Meal> mealsList = new ArrayList<Meal>(); // list of meals that is only
+	public ArrayList<String> filtersList = new ArrayList<String>(); // list of filters currently active
 	// populated while program is running
 	// TODO - Should these go here?    
     String nfoodName;
@@ -136,7 +138,61 @@ public class FoodBuildUI extends Application {
 	    		}
 	    	}		
 		} ); // food view display cellFactory
-	    
+	  //foodView.getSelectionModel().selectedItemProperty().addListener(
+        foodView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent click) {
+
+                if (click.getClickCount() == 2) {
+                   //Use ListView's getSelected Item
+                   Food currentItemSelected = foodView.getSelectionModel()
+                                                            .getSelectedItem();
+                   //use this to do whatever you want to. Open Link etc.
+                   GridPane foodCheck = new GridPane();
+                   foodCheck.setPadding(new Insets(10, 10, 10, 10));
+                   foodCheck.setVgap(5);
+                   foodCheck.setHgap(5);
+                   Label nameLabel = new Label("Name of Food: " + currentItemSelected.getName());
+                   Label IDLabel = new Label("ID of Food: " + currentItemSelected.getId());
+                   Label calorieLabel = new Label("Calories: " + Double.toString(currentItemSelected.getCalories()));
+                   Label carbsLabel = new Label("Carbs: " + Double.toString(currentItemSelected.getCarbohydrates()));
+                   Label fatLabel = new Label("Fat: " + Double.toString(currentItemSelected.getFat()));
+                   Label fiberLabel = new Label("Fiber: " + Double.toString(currentItemSelected.getFiber()));
+                   Label proteinLabel = new Label("Protein: " + Double.toString(currentItemSelected.getProtein()));
+                   Button okay = new Button("Okay!");
+                   okay.setPrefSize(230, 20);
+                   foodCheck.add(nameLabel,0,0,1,1);
+                   foodCheck.add(IDLabel,0,1,1,1);
+                   foodCheck.add(calorieLabel,0,2,1,1);
+                   foodCheck.add(carbsLabel,0,3,1,1);
+                   foodCheck.add(fatLabel,0,4,1,1);
+                   foodCheck.add(fiberLabel,0,5,1,1);
+                   foodCheck.add(proteinLabel,0,6,1,1);
+                   foodCheck.add(okay, 0, 7,1,1);
+                   Scene foodCheckScene = new Scene(foodCheck, 320, 200);
+    
+                   //New window (Stage)
+                   Stage CheckFood = new Stage();
+                   CheckFood.setTitle("Food Data");
+                   CheckFood.setScene(foodCheckScene);
+    
+                   // Set position of second window, related to primary window.
+                   CheckFood.setX(primaryStage.getX() + 700);
+                   CheckFood.setY(primaryStage.getY() + 350);
+    
+                   CheckFood.show();
+                   okay.setOnAction(new EventHandler<ActionEvent>() {
+                        
+                       @Override
+                       public void handle(ActionEvent event) {
+                           CheckFood.close();
+                       }
+                   });
+                   System.out.println(currentItemSelected.getName());
+                }
+                
+            }
+        }); // foodView set on mouse click
 	    // filtering -------------------------------------------------------------
 	    // label for food name field
 	    Label foodFilterLabel = new Label("Filter by food name");
@@ -160,6 +216,7 @@ public class FoodBuildUI extends Application {
 
 	    // list of currently active filters
 	    ObservableList<String> currentFilterList = FXCollections.observableArrayList();
+	    currentFilterList.addAll(filtersList);
 	    // filter label
 	    Label filterLabel = new Label("Current Search Filters:");
 	    filterLabel.setPadding(new Insets(2));
@@ -458,11 +515,12 @@ public class FoodBuildUI extends Application {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
-	    		currentFilterList.clear();
+	    		currentFilterList.add(userInput);
 	    		food.clear();
 	    		food.addAll(foodList.filterByName(userInput));
 	    		
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
+	    		foodNameSearch.clear();
 	    	}	
 	    }); // action for runFoodQuery button
 	    // nutrient query button action
@@ -470,11 +528,15 @@ public class FoodBuildUI extends Application {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		String userInput = nutrientSearch.getText();
-	    		currentFilterList.clear();
-	    		food.clear();
-	    		List<String> ruleList= Arrays.asList(userInput);
-	    		food.addAll(foodList.filterByNutrients(ruleList));
+                currentFilterList.clear();
+                food.clear();
+                filtersList.add(userInput);
+                currentFilterList.addAll(filtersList);
+                
+                food.addAll(foodList.filterByNutrients(filtersList));
+                foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
+	    		nutrientSearch.clear();
 	    	}
 	    }); // action for runNutrientQuery button	    
 	    // clearFilters button action
@@ -483,7 +545,8 @@ public class FoodBuildUI extends Application {
             public void handle(ActionEvent event) {
             	food.clear();
             	food.addAll(foodList.getAllFoods());
-            	currentFilterList.clear();
+            	//currentFilterList.clear();
+            	filtersList.clear();
             	foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
             }
 	    } ); // clear filters button action
