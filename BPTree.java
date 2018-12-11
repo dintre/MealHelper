@@ -1,3 +1,4 @@
+//package application;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -263,6 +264,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         			newKidPlace = (1 + newKidPlace)  * -1;
             	}
         		
+        		int newKidChildPlace = newKidPlace + 1;
+        		
         		//finds the position of the insertion node
         		int currentPlace = Collections.binarySearch(keys, 
         				insertionNode.getFirstLeafKey());
@@ -272,18 +275,18 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		
         		//puts the new kid one forward if it's in an equal 
         		//position as the insertion node and its first LeafKey is bigger
-        		if(newKidPlace == currentPlace && (insertionNode
+        		/*if(newKidPlace == currentPlace && (insertionNode
         				.getFirstLeafKey()
         				.compareTo(newKid.getFirstLeafKey()) >= 0)) {
         			newKidPlace++;
-        		}
+        		}*/
         	
         		
         		//adds the new kid's first key into this node's keys
         		this.keys.add(newKidPlace, newKid.getFirstLeafKey());
         		
         		//adds the new node as the child of this one
-        		this.children.add(newKidPlace + 1, newKid);
+        		this.children.add(newKidChildPlace, newKid);
         		
         		//removes the key from newKid if this is an internal node 
         		//(since it graduated to this node)
@@ -851,7 +854,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * 
      * @param args
      */
-  /*  public static void main(String[] args) {
+   /* public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
 
@@ -873,15 +876,40 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
        bpTree.insert(1.0d, 1.0d);
        bpTree.insert(0.03d, 1.1d);
    //     bpTree.insert(0.21d, 1.2d);
-   //    bpTree.insert(0.21d, 1.3d);*/
-       /* BPTree<Integer, String> calorieTree = new BPTree<>(3);
+   //    bpTree.insert(0.21d, 1.3d);
+        BPTree<Integer, String> calorieTree = new BPTree<>(3);
 
         calorieTree.insert(80, "Egg");
+        calorieTree.insert(100, "Soy");
+        calorieTree.insert(288, "Milk");
         calorieTree.insert(150, "Eggo");
+        calorieTree.insert(80, "Egg");
+        calorieTree.insert(100, "Soy");
+        calorieTree.insert(288, "Milk"); //search error here
+        calorieTree.insert(150, "Eggo");
+        calorieTree.insert(80, "Egg");
+        calorieTree.insert(100, "Soy");
+        calorieTree.insert(288, "Milk");
+        calorieTree.insert(150, "Eggo");
+        calorieTree.insert(80, "Egg");
+       calorieTree.insert(100, "Soy");
+        calorieTree.insert(288, "Milk");
+        calorieTree.insert(150, "Eggo");
+        calorieTree.insert(80, "Egg");
+        calorieTree.insert(22, "Red Win Vinegar");
+        calorieTree.insert(288, "Yogurt");
+        calorieTree.insert(150, "Eggo");
+        calorieTree.insert(32, "Chip");
+        calorieTree.insert(231, "Candy");
+     //   calorieTree.insert(100, "Soy Milk");
+       // calorieTree.insert(130, "Bread");
+    //    calorieTree.insert(830, "Pizza");
+       // calorieTree.insert(1538, "Lasagna");
+    //    calorieTree.insert(153, "Chicken");
         
         System.out.println("\n\nTree structure:\n" + calorieTree.toString());
-        System.out.println(calorieTree.rangeSearch(150, "=="));/*
-        
+        System.out.println(calorieTree.rangeSearch(150, "<="));
+}*/
 
         // build an ArrayList of those value and add to BPTree also
         // allows for comparing the contents of the ArrayList 
