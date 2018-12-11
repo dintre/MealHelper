@@ -23,6 +23,8 @@ public class FoodData implements FoodDataADT<Food> {
     // Map of nutrients and their corresponding index
     private HashMap<String, BPTree<Double, Food>> indexes;
     
+    // Food name tree
+	BPTree<String,Food> nameTree;
     
     /**
      * Public constructor
@@ -30,7 +32,24 @@ public class FoodData implements FoodDataADT<Food> {
     public FoodData() {
         // TODO : Complete
     	foodList = new ArrayList<Food>();
-    }
+    	
+    	// instantiate indexes hashmap variable
+    	indexes = new HashMap<String, BPTree<Double, Food>>();
+    	
+    	// BPTrees
+    	nameTree = new BPTree<String,Food>(3);
+    	// Calories tree
+    	BPTree<Double,Food> caloriesTree = new BPTree<Double,Food>(3);
+    	// carbohydrate tree
+    	BPTree<Double,Food> carbohydrateTree = new BPTree<Double,Food>(3);
+    	// fat tree
+    	BPTree<Double,Food> fatTree = new BPTree<Double,Food>(3);
+    	// fiber tree
+    	BPTree<Double,Food> fiberTree = new BPTree<Double,Food>(3);
+    	// protein tree
+    	BPTree<Double,Food> proteinTree = new BPTree<Double,Food>(3);
+    	
+    } // constructor
     
     
     /*
@@ -74,6 +93,9 @@ public class FoodData implements FoodDataADT<Food> {
 
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
 				foodList.add(newFood);
+				
+				// adding to trees
+				nameTree.insert(name,newFood);
 
 			} // while reading lines
 			
@@ -129,6 +151,19 @@ public class FoodData implements FoodDataADT<Food> {
     @Override
     public List<Food> filterByNutrients(List<String> rules) {
         // TODO : Complete
+    	// Map of nutrients and their corresponding index
+        //private HashMap<String, BPTree<Double, Food>> indexes;
+    	// "calories >= 50"
+    	
+    	
+    	indexes.get(arg0);
+    	
+    	
+    	
+    	
+    	
+    	
+    	
         return null;
     }
 
@@ -148,15 +183,6 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> getAllFoods() {
-        // TODO : Complete
-    	// TODO - should this return just the food names? Or have a separate method for that?
-    	/*
-    	List<Food> returnList = foodList.stream()
-    			.map(mapper)
-    			.collect(Collectors.toList());
-    	*/
-    	//foodList.sort(Comparator.comparing(Food::getName));
-    	
     	foodList.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
