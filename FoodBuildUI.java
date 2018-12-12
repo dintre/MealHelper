@@ -3,6 +3,7 @@
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Observable;
 import java.util.Scanner;
@@ -69,6 +70,7 @@ public class FoodBuildUI extends Application {
 	public ArrayList<String> filtersList = new ArrayList<String>(); // list of filters currently active
 	
 	// TODO - Should these go here?    
+	// for storing new food's values
     String nfoodName;
     String nfoodID;
     Double nfoodcalories;
@@ -77,6 +79,25 @@ public class FoodBuildUI extends Application {
     Double nfoodfiber;
     Double nfoodprotein;
 	
+    private ArrayList<Meal> sortMeals(ArrayList<Meal> mealList){
+		mealList.sort(new Comparator<Meal>() { // anonymous class
+    		@Override
+    		public int compare(Meal meal1,Meal meal2) {
+    			if(meal1.getName().toLowerCase().equals(meal2.getName().toLowerCase())) {
+    				return 0;
+    			}
+    			else if(meal1.getName().toLowerCase().compareTo(meal2.getName().toLowerCase())  < 0 ){
+    				return -1;
+    			}
+    			else {
+    				return 1;
+    			}
+    		} // compare() overridden	
+    	}); // end of anonymous inner class
+		return mealList;
+	} // sortMeals()
+    
+    
 	@Override
 	public void start(Stage primaryStage) {
 		// set title of the window that opens
@@ -233,6 +254,7 @@ public class FoodBuildUI extends Application {
         createFood.setOnAction(new EventHandler<ActionEvent>() {  
             @Override
             public void handle(ActionEvent event) {
+                // field labels
                 Label nameLabel = new Label("Name of Food:");
                 Label IDLabel = new Label("ID of Food:");
                 Label calorieLabel = new Label("Calories:");
@@ -385,6 +407,7 @@ public class FoodBuildUI extends Application {
                     @Override
                     public void handle(ActionEvent event) {
                         boolean invalid = false;
+                        
                         nfoodName=name.getText();
                         nfoodID = ID.getText();
                         String tempfoodcalories = calories.getText();
@@ -511,9 +534,11 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
                 currentFilterList.clear();
-	    		currentFilterList.add(userInput);
+                filtersList.add(userInput);
+	    		currentFilterList.addAll(filtersList);
 	    		food.clear();
-	    		food.addAll(foodList.filterByName(userInput));	    		
+	    		food.addAll(foodList.filterByName(userInput));	
+	    		foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    		foodNameSearch.clear();
 	    	}	
@@ -559,7 +584,7 @@ public class FoodBuildUI extends Application {
 	    mealLabel.setFont(Font.font("Cambria", 16));
 	    // list of meals
 	    ObservableList<Meal> meals = FXCollections.observableArrayList();
-	    meals.addAll(mealsList); // add from the list variable of this class
+	    meals.addAll(sortMeals(mealsList)); // add from the list variable of this class
 	    ListView<Meal> mealView = new ListView<Meal>(meals);
 	    mealView.setPrefSize(400, 260);
 	    // use to store object but display meal's name
@@ -590,6 +615,7 @@ public class FoodBuildUI extends Application {
             public void handle(ActionEvent event) {
             	VBox mealLayout = new VBox();
             	mealLayout.setPadding(new Insets(20));
+            	mealLayout.setSpacing(5);
             	// fields and labels within the dialogue
                 Label nameLabel = new Label("Name of Meal:"); 
                 TextField mealName = new TextField();
@@ -636,7 +662,8 @@ public class FoodBuildUI extends Application {
                 		Meal newMeal = new Meal(mealName.getText());
                 		newMeal.addFoodList(foodListView.getSelectionModel().getSelectedItems());
                 		mealsList.add(newMeal); // so it's stored in list
-                		meals.add(newMeal); // so it shows in right section
+                		meals.clear();
+                		meals.addAll(sortMeals(mealsList)); // so it shows in right section
                 		CrMeal.close();
                 	}
                 }); // generateMeal button action
@@ -673,11 +700,12 @@ public class FoodBuildUI extends Application {
 	            
 	            // Vbox to display
 	            VBox display = new VBox();
+	            display.setSpacing(5);
 	            // button that will add and close the window
 	            Button remove = new Button();
 	            remove.setText("Remove Selected from Meal");
 	            remove.setPrefSize(200, 20);
-	            remove.setPadding(new Insets(10));
+	            remove.setPadding(new Insets(5));
 	            
 	            // pieces for adding more ingredients to the meal
 	            Label foodListLabel = new Label("Choose foods to add.");
@@ -702,6 +730,7 @@ public class FoodBuildUI extends Application {
 	            // button for adding more foods to meal
 	            Button add = new Button("Add Foods");
 	            add.setPrefSize(100, 20);
+	            add.setPadding(new Insets(5));
 	            // VBox details
 	            display.getChildren().addAll(title, curListView, remove, foodListLabel, foodListView, add);
 	            display.setPadding(new Insets(10));
@@ -858,6 +887,7 @@ public class FoodBuildUI extends Application {
                 	@Override
                 	public void handle(ActionEvent event) {
                 		String fileNameInput = fileName.getText();
+                		food.clear();
                 		foodList.loadFoods(fileNameInput + ".csv");
                 		food.addAll(foodList.getAllFoods());
                 		loadStage.close(); // close the window
