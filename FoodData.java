@@ -18,37 +18,31 @@ import java.util.stream.Collectors;
  * @author sapan (sapan@cs.wisc.edu)
  */
 public class FoodData implements FoodDataADT<Food> {
-    
-    // List of all the food items.
-    private List<Food> foodList;
-
+	// instance variables
     // Map of nutrients and their corresponding index
     private HashMap<String, BPTree<Double, Food>> indexes;
-    
     // Food name tree
-	BPTree<String,Food> nameTree;
+	private BPTree<String,Food> nameTree;
 	// Calories tree
-	BPTree<Double,Food> caloriesTree;
+	private BPTree<Double,Food> caloriesTree;
     // Carbohydrate tree
-    BPTree<Double,Food> carbohydrateTree;
+    private BPTree<Double,Food> carbohydrateTree;
     // Fat tree
-    BPTree<Double,Food> fatTree;
+    private BPTree<Double,Food> fatTree;
     // Fiber tree
-    BPTree<Double,Food> fiberTree;
+    private BPTree<Double,Food> fiberTree;
     // Protein tree
-    BPTree<Double,Food> proteinTree;
+    private BPTree<Double,Food> proteinTree;
+    
     /**
      * Public constructor
      */
     public FoodData() {
-        // TODO : Complete
-    	foodList = new ArrayList<Food>();
-    	
     	// instantiate indexes hashmap variable
     	indexes = new HashMap<String, BPTree<Double, Food>>();
-    	
     	// BPTrees
     	nameTree = new BPTree<String,Food>(3);
+    	// calory tree
     	caloriesTree = new BPTree<Double,Food>(3);
     	// carbohydrate tree
     	carbohydrateTree = new BPTree<Double,Food>(3);
@@ -58,9 +52,13 @@ public class FoodData implements FoodDataADT<Food> {
     	fiberTree = new BPTree<Double,Food>(3);
     	// protein tree
     	proteinTree = new BPTree<Double,Food>(3);
-    	
-    } // constructor
-    
+    	// put trees into the HashMap
+		indexes.put("calories", caloriesTree);
+        indexes.put("carbohydrates", carbohydrateTree);
+        indexes.put("fat", fatTree);
+        indexes.put("fiber", fiberTree);
+        indexes.put("protein", proteinTree);
+    } // constructor    
     
     /*
      * (non-Javadoc)
@@ -76,11 +74,9 @@ public class FoodData implements FoodDataADT<Food> {
 		String fileLine = null;
 		// create file name
 		String fileName = filePath;
-		
 		try {
 			foodFile = new File(fileName);
 			input = new Scanner(foodFile);
-			
 			// while reading each line from the file
 			while(input.hasNextLine()) {
 				fileLine = input.nextLine();
@@ -100,10 +96,7 @@ public class FoodData implements FoodDataADT<Food> {
 				double carbs = Double.parseDouble(commaSplitter[7]);
 				double fiber = Double.parseDouble(commaSplitter[9]);
 				double protein = Double.parseDouble(commaSplitter[11]);
-
 				Food newFood = new Food(id, name, calories, fat, carbs, fiber, protein);
-				foodList.add(newFood);
-				
 				// adding to trees
 				nameTree.insert(name,newFood);
 				caloriesTree.insert(calories, newFood);
@@ -111,28 +104,18 @@ public class FoodData implements FoodDataADT<Food> {
                 fatTree.insert(fat, newFood);;
                 fiberTree.insert(fiber, newFood);
                 proteinTree.insert(protein, newFood);
-
 			} // while reading lines
-			indexes.put("calories", caloriesTree);
-            indexes.put("carbohydrates", carbohydrateTree);
-            indexes.put("fat", fatTree);
-            indexes.put("fiber", fiberTree);
-            indexes.put("protein", proteinTree);
 		} // try
-
 		catch (FileNotFoundException e) { // catch when the file isn't found
 			e.printStackTrace();
-		} // catch fileNotFound
-		
+		} // catch fileNotFound	
 		catch (Exception e) { // catch any other exceptions
 			e.printStackTrace();
 		}
-
 		finally {
 			// close the scanner
 			input.close();
 		} // finally
-
     } // loadFoods()
 
     /*
@@ -141,87 +124,9 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByName(String substring) {
-    	substring = substring.toLowerCase();
     	// create list to be returned
-    	
-    	
-    	ArrayList<Food> returnList = new ArrayList<Food>();
-    	
-    	// if the list of food list is empty, return empty list
-    	if(foodList.isEmpty()) {
-    		return returnList;
-    	}
-    	
-    	// loop through foodList food names and check if name contains search string
-    	for(int i = 0; i < foodList.size(); i++) {
-    		String foodName = foodList.get(i).getName().toLowerCase();
-    		if(foodName.contains(substring)) {
-    			returnList.add(foodList.get(i));
-    		}
-    	}
-    	
-        
-        List<Food> tempList = nameTree.rangeSearch(substring, "==");
-        System.out.println(tempList);
-        
-        
-        
-        return returnList;
-
-    } // filterByName()
-
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
-     */
-    @Override
-    public List<Food> filterByNutrients(List<String> rules) {
-        // TODO : Complete
-    	// Map of nutrients and their corresponding index
-        //private HashMap<String, BPTree<Double, Food>> indexes;
-    	// "calories >= 50"
-    	
-    	//ArrayList<String> ruleList = (ArrayList<String>) rules;
-    	//List<String> ruleList = rules;
-        int numRules = rules.size();
-        ArrayList<List<Food>> tempList = new ArrayList<List<Food>>();
-        List<Food> tempCurrentList = new ArrayList<Food>();
-        for (int i = 0;i<numRules;i++) {
-            String [] splitRule = rules.get(i).split(" ");
-            String nutrientType = splitRule[0];
-            String comparator = splitRule[1];
-            Double value = Double.parseDouble(splitRule[2]);
-            BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
-            tempCurrentList = nutrientTree.rangeSearch(value, comparator);
-            tempList.add(tempCurrentList);
-        } // for
-        List<Food> finalList = new ArrayList<Food>();
-        finalList.addAll(tempList.get(0));
-        for (ListIterator<List<Food>> iter = tempList.listIterator(0); iter.hasNext(); ) {
-            finalList.retainAll(iter.next());
-        }
-
-        return finalList;
-        //return calorTree.rangeSearch(value, comparator);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#addFood(skeleton.Food)
-     */
-    @Override
-    public void addFood(Food Food) {
-        // TODO : Complete?
-    	foodList.add(Food);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see skeleton.FoodDataADT#getAllFoods()
-     */
-    @Override
-    public List<Food> getAllFoods() {
-    	foodList.sort(new Comparator<Food>() { // anonymous class
+    	List<Food> finalList = nameTree.rangeSearch(substring, "==");
+        finalList.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
     			if(food1.getName().toLowerCase().equals(food2.getName().toLowerCase())) {
@@ -233,26 +138,111 @@ public class FoodData implements FoodDataADT<Food> {
     			else {
     				return 1;
     			}
-    		} // compare() overridden
-    		
-    	});
-    	
-    	return foodList;
-    }
+    		} // compare() overridden	
+    	}); // end of anonymous inner class
+        return finalList;
+    } // filterByName()
 
+    /*
+     * (non-Javadoc)
+     * @see skeleton.FoodDataADT#filterByNutrients(java.util.List)
+     */
+    @Override
+    public List<Food> filterByNutrients(List<String> rules) {
+        int numRules = rules.size();
+        ArrayList<List<Food>> tempList = new ArrayList<List<Food>>();
+        List<Food> tempCurrentList = new ArrayList<Food>();
+        for (int i = 0; i < numRules; i++) {
+            String [] splitRule = rules.get(i).split(" ");
+            String nutrientType = splitRule[0].toLowerCase();
+            String comparator = splitRule[1];
+            Double value = Double.parseDouble(splitRule[2]);
+            BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
+            tempCurrentList = nutrientTree.rangeSearch(value, comparator);
+            tempList.add(tempCurrentList);
+        } // for
+        List<Food> finalList = new ArrayList<Food>();
+        finalList.addAll(tempList.get(0));
+        for (ListIterator<List<Food>> iter = tempList.listIterator(0); iter.hasNext(); ) {
+            finalList.retainAll(iter.next());
+        }
+        // sort list to return
+        finalList.sort(new Comparator<Food>() { // anonymous class
+    		@Override
+    		public int compare(Food food1,Food food2) {
+    			if(food1.getName().toLowerCase().equals(food2.getName().toLowerCase())) {
+    				return 0;
+    			}
+    			else if(food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase())  < 0 ){
+    				return -1;
+    			}
+    			else {
+    				return 1;
+    			}
+    		} // compare() overridden	
+    	}); // end of anonymous inner class
+        return finalList;
+    } // filterByNutrients()
+
+    /*
+     * (non-Javadoc)
+     * @see skeleton.FoodDataADT#addFood(skeleton.Food)
+     */
+    @Override
+    public void addFood(Food food) {
+    	//foodList.add(food);
+		// adding to trees
+    	String name = food.getName();
+    	Double calories = food.getCalories();
+    	Double carbs = food.getCarbohydrates();
+    	Double fat = food.getFat();
+    	Double fiber = food.getFiber();
+    	Double protein = food.getProtein();
+    	// insert at trees for indexing
+		nameTree.insert(name,food);
+		caloriesTree.insert(calories, food);
+        carbohydrateTree.insert(carbs, food);
+        fatTree.insert(fat, food);;
+        fiberTree.insert(fiber, food);
+        proteinTree.insert(protein, food);
+    } // addFood()
+
+    /*
+     * (non-Javadoc)
+     * @see skeleton.FoodDataADT#getAllFoods()
+     */
+    @Override
+    public List<Food> getAllFoods() {
+    	List<Food> foods = caloriesTree.rangeSearch(0.0, ">=");
+    	foods.sort(new Comparator<Food>() { // anonymous class
+    		@Override
+    		public int compare(Food food1,Food food2) {
+    			if(food1.getName().toLowerCase().equals(food2.getName().toLowerCase())) {
+    				return 0;
+    			}
+    			else if(food1.getName().toLowerCase().compareTo(food2.getName().toLowerCase())  < 0 ){
+    				return -1;
+    			}
+    			else {
+    				return 1;
+    			}
+    		} // compare() overridden	
+    	}); // end of anonymous inner class
+    	
+    	return foods;
+    } // getAllFoods()
 
 	@Override
 	public void saveFoods(String filename) {
 		File saveFile = null;
 		PrintStream writer = null;
-		
 		try {
 			saveFile = new File(filename); // create the file
 			writer = new PrintStream(saveFile); // create the writer
-			
+			List<Food> foods = caloriesTree.rangeSearch(0.0, ">=");
 			// loop through the current arraylist of food
-			for(int i = 0; i < foodList.size(); i++) {
-				Food current = foodList.get(i);
+			for(int i = 0; i < foods.size(); i++) {
+				Food current = foods.get(i);
 				// write the line
 				writer.println(current.getId() + "," + current.getName()
 				+ ",calories," + current.getCalories() + ",fat," + 
@@ -261,59 +251,26 @@ public class FoodData implements FoodDataADT<Food> {
 				+ current.getProtein());
 			} // for loop
 			
-		} // try
-		
+		} // try		
 		catch (IOException e){ // could not save for some reason
 			System.out.println("Could not save the food list. ");
-		}
-		
-		catch (Exception e) {
+		}		
+		catch (Exception e) { // catch any other exceptions
 			e.printStackTrace();
-		}
-		
-		finally {
+		}		
+		finally { // close the writer before finishing method
 			if(writer != null) {
 				writer.close();
 			}
-		}
-		
+		} // finally		
 	} // saveFoods()
-
-	// TODO - do we need this? Or can we make the original one work on its own
-	public ArrayList<String> getFoodNames(){
-    	ArrayList<Food> tempList = (ArrayList<Food>) foodList;
-    	
-    	ArrayList<String> returnList = new ArrayList<String>();
-    	
-    	for(int i = 0; i < tempList.size(); i++) {
-    		returnList.add(tempList.get(i).getName());
-    	}
-    	   	
-    	return returnList;
-	}
 	
-	
+	/*
+	 * main method for testing
+	 */
 	public static void main(String[] args) {
-		
-		FoodData foods = new FoodData();
-		foods.loadFoods("foodItems.csv");
-		
-		System.out.println("Food list is this: ");
-		System.out.println(foods.foodList);
-		
-		System.out.println();
-		System.out.println();
-		System.out.println("Filtering by names ");
-		System.out.println();
-		System.out.println("Filter by 'soy' :"); foods.filterByName("soy");
-		System.out.println();
-		System.out.println("Filter by 'nut' :"); foods.filterByName("nut");
-		
-		foods.saveFoods("testSave.csv");
+
 		
 	} // Main()
-	
-	
-	
 	
 } // class FoodData

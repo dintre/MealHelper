@@ -42,10 +42,10 @@ public class Meal {
 	// TODO - should this work this way?
 	// used to display food names that are in a meal
 	public ArrayList<Food> getIngredientList(){
-		ArrayList<String> returnList = new ArrayList<String>();
+		ArrayList<Food> returnList = new ArrayList<Food>();
 		
 		for(int i = 0; i < ingredientList.size(); i++) {
-			returnList.add(ingredientList.get(i).getName());
+			returnList.add(ingredientList.get(i));
 		}
 		
 		return ingredientList;

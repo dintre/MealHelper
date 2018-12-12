@@ -65,9 +65,9 @@ import javafx.scene.layout.VBox;
 public class FoodBuildUI extends Application {
 	
 	static ObservableList<String> names = FXCollections.observableArrayList();
-	public ArrayList<Meal> mealsList = new ArrayList<Meal>(); // list of meals that is only
+	public ArrayList<Meal> mealsList = new ArrayList<Meal>(); // list of meals that is only populated while program is running
 	public ArrayList<String> filtersList = new ArrayList<String>(); // list of filters currently active
-	// populated while program is running
+	
 	// TODO - Should these go here?    
     String nfoodName;
     String nfoodID;
@@ -89,6 +89,7 @@ public class FoodBuildUI extends Application {
 		// establish initial borderPane layout
 		BorderPane border = new BorderPane();
 		// create borderPane sections
+		
 		// top section 
 		HBox headingbox = new HBox();
 	    //headingbox.setPadding(new Insets(10, 120, 10, 100));
@@ -121,7 +122,7 @@ public class FoodBuildUI extends Application {
 	    Label foodLabel = new Label();
 	    foodLabel.setText("Food");
 	    foodLabel.setPadding(new Insets(5));
-	    foodLabel.setFont(Font.font("Cambria", 18));
+	    foodLabel.setFont(Font.font("Cambria", 16));
 	    // food view
 	    ListView<Food> foodView = new ListView<Food>(food);
 	    foodView.setPrefSize(400, 260);
@@ -439,13 +440,7 @@ public class FoodBuildUI extends Application {
                             Label fatLabel = new Label("Fat: " + Double.toString(nfoodfat));
                             Label fiberLabel = new Label("Fiber: " + Double.toString(nfoodfiber));
                             Label proteinLabel = new Label("Protein: " + Double.toString(nfoodprotein));
-                            //Label nameLabel = new Label("Name of Food: ");
-                            //Label IDLabel = new Label("ID of Food: ");
-                            //Label calorieLabel = new Label("Calories: ");
-                            //Label carbsLabel = new Label("Carbs: ");
-                            //Label fatLabel = new Label("Fat: ");
-                            //Label fiberLabel = new Label("Fiber: ");
-                            //Label proteinLabel = new Label("Protein: ");
+                            
                             Button verify = new Button("Okay!");
                             verify.setPrefSize(230, 20);
                             Button cancel = new Button("Cancel!");
@@ -475,7 +470,7 @@ public class FoodBuildUI extends Application {
                                  
                                 @Override
                                 public void handle(ActionEvent event) {
-                                    Food newFood = new Food(nfoodName,nfoodID,nfoodcalories,nfoodfat,nfoodcarbs,nfoodfiber,nfoodprotein);
+                                    Food newFood = new Food(nfoodID,nfoodName,nfoodcalories,nfoodfat,nfoodcarbs,nfoodfiber,nfoodprotein);
                                     foodList.addFood(newFood);
                                     food.add(newFood);
                                     VerifyFood.close();
@@ -515,14 +510,15 @@ public class FoodBuildUI extends Application {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
+                currentFilterList.clear();
 	    		currentFilterList.add(userInput);
 	    		food.clear();
-	    		food.addAll(foodList.filterByName(userInput));
-	    		
+	    		food.addAll(foodList.filterByName(userInput));	    		
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    		foodNameSearch.clear();
 	    	}	
 	    }); // action for runFoodQuery button
+	    
 	    // nutrient query button action
 	    runNutrientQuery.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
@@ -531,8 +527,7 @@ public class FoodBuildUI extends Application {
                 currentFilterList.clear();
                 food.clear();
                 filtersList.add(userInput);
-                currentFilterList.addAll(filtersList);
-                
+                currentFilterList.addAll(filtersList);  
                 food.addAll(foodList.filterByNutrients(filtersList));
                 foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
@@ -561,7 +556,7 @@ public class FoodBuildUI extends Application {
 	    Label mealLabel = new Label();
 	    mealLabel.setText("Meals");
 	    mealLabel.setPadding(new Insets(5));
-	    mealLabel.setFont(Font.font("Cambria", 18));
+	    mealLabel.setFont(Font.font("Cambria", 16));
 	    // list of meals
 	    ObservableList<Meal> meals = FXCollections.observableArrayList();
 	    meals.addAll(mealsList); // add from the list variable of this class
@@ -582,7 +577,7 @@ public class FoodBuildUI extends Application {
 		} ); // cell factory for displaying meals well
 	    // middle section for results to be displayed  -------------------------------------------------------------------------------------------------
 	    VBox middle = new VBox();
-	    middle.setPadding(new Insets(20));
+	    middle.setPadding(new Insets(10));
 	    middle.setSpacing(10);
 	    middle.setStyle("-fx-background-color: #B39DDB;");
 	    
@@ -752,8 +747,8 @@ public class FoodBuildUI extends Application {
 	    // for displaying the selected meals' ingredients
 	    Label mealIngredientsDisplay = new Label();
 	    mealIngredientsDisplay.setText("Ingredients for: ");
-	    mealIngredientsDisplay.setFont(Font.font("Cambria", 24));
-	    mealIngredientsDisplay.setPadding(new Insets(10));
+	    mealIngredientsDisplay.setFont(Font.font("Cambria", 16));
+	    mealIngredientsDisplay.setPadding(new Insets(5));
 	    // list of currently selected meals' ingredients
 	    ObservableList<Food> ingredients = FXCollections.observableArrayList();
 	    ListView<Food> ingredientView = new ListView<Food>(ingredients);
@@ -777,7 +772,7 @@ public class FoodBuildUI extends Application {
 	    showIngredients.setOnAction(new EventHandler<ActionEvent>() {
 	    	public void handle(ActionEvent event) {
 	    		Meal curMeal = (Meal) mealView.getSelectionModel().getSelectedItem();
-	    		mealIngredientsDisplay.setText(curMeal.getName() + "'s Ingredients:");
+	    		mealIngredientsDisplay.setText(curMeal.getName() + "'s Ingredients");
 	    		ingredients.clear();
 	    		ingredients.addAll(curMeal.getIngredientList());
 	    		middle.getChildren().clear();
@@ -803,18 +798,14 @@ public class FoodBuildUI extends Application {
 	    		nutritionList.addAll(calorieResult, fatResult, carbsResult, fiberResult, proteinResult);
 	    		ingredientView.setPrefSize(300, 300);
 	    		ingredientView.setEditable(false);
-	    		Label nutritionTitle = new Label(curMeal.getName() + "'s Nutritional Content:");
-	    	    nutritionTitle.setFont(Font.font("Cambria", 24));
-	    	    nutritionTitle.setPadding(new Insets(10));
+	    		Label nutritionTitle = new Label(curMeal.getName() + "'s Nutritional Content");
+	    	    nutritionTitle.setFont(Font.font("Cambria", 16));
+	    	    nutritionTitle.setPadding(new Insets(5));
 	    	    middle.getChildren().clear();
 	    	    middle.getChildren().addAll(nutritionTitle, nutritionView);
 	    	};
 	    } ); // analyzeMeal button action
-	    // add all components to the middle
-	    //middle.getChildren().addAll(mealIngredientsDisplay, ingredientView);
-	    // end of middle section ----------------------------------------------------------------------------------------------------------------------
-	    
-
+	    // middle section content -------------------------------------------------------------------------------------------------------------------
 	    
 	    // bottom section - exit button --------------------------------------------------------------------------------------------------------------
 	    HBox bottomMenu = new HBox();
