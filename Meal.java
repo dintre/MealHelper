@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -90,7 +91,6 @@ public class Meal {
 			ingredientList.remove(foods.get(i));
 		}
 	} // removeMultipleFoods()
-	
 	
 	
 	
