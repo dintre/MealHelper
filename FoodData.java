@@ -65,7 +65,27 @@ public class FoodData implements FoodDataADT<Food> {
      * @see skeleton.FoodDataADT#loadFoods(java.lang.String)
      */
     @Override
-    public void loadFoods(String filePath) {    	
+    public void loadFoods(String filePath) {
+    	// clear any existing food trees
+		indexes.remove("calories", caloriesTree);
+        indexes.remove("carbohydrates", carbohydrateTree);
+        indexes.remove("fat", fatTree);
+        indexes.remove("fiber", fiberTree);
+        indexes.remove("protein", proteinTree);
+    	// instantiate new trees.
+    	nameTree = new BPTree<String,Food>(3);
+    	caloriesTree = new BPTree<Double,Food>(3);
+    	carbohydrateTree = new BPTree<Double,Food>(3);
+    	fatTree = new BPTree<Double,Food>(3);
+    	fiberTree = new BPTree<Double,Food>(3);
+    	proteinTree = new BPTree<Double,Food>(3);
+    	// add new trees to the HashMap
+		indexes.put("calories", caloriesTree);
+        indexes.put("carbohydrates", carbohydrateTree);
+        indexes.put("fat", fatTree);
+        indexes.put("fiber", fiberTree);
+        indexes.put("protein", proteinTree);
+    	
     	// create variable for the file to be loaded
 		File foodFile = null;
 		// create scanner to look through file
@@ -154,12 +174,14 @@ public class FoodData implements FoodDataADT<Food> {
         List<Food> tempCurrentList = new ArrayList<Food>();
         for (int i = 0; i < numRules; i++) {
             String [] splitRule = rules.get(i).split(" ");
-            String nutrientType = splitRule[0].toLowerCase();
-            String comparator = splitRule[1];
-            Double value = Double.parseDouble(splitRule[2]);
-            BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
-            tempCurrentList = nutrientTree.rangeSearch(value, comparator);
-            tempList.add(tempCurrentList);
+            if(splitRule.length != 1) {
+            	String nutrientType = splitRule[0].toLowerCase();
+            	String comparator = splitRule[1];
+            	Double value = Double.parseDouble(splitRule[2]);
+            	BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
+            	tempCurrentList = nutrientTree.rangeSearch(value, comparator);
+            	tempList.add(tempCurrentList);
+            }
         } // for
         List<Food> finalList = new ArrayList<Food>();
         finalList.addAll(tempList.get(0));
