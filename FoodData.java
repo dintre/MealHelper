@@ -144,8 +144,10 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByName(String substring) {
-    	// create list to be returned
-    	List<Food> finalList = nameTree.rangeSearch(substring, "==");
+    	String searchString = "name == " + substring;
+    	FoodQuery currentQuery = new FoodQuery(searchString, nameTree);
+
+    	List<Food> finalList = currentQuery.substringQuery(substring);
         finalList.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
@@ -169,22 +171,28 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByNutrients(List<String> rules) {
+    	
         int numRules = rules.size();
         ArrayList<List<Food>> tempList = new ArrayList<List<Food>>();
         List<Food> tempCurrentList = new ArrayList<Food>();
+
         for (int i = 0; i < numRules; i++) {
             String [] splitRule = rules.get(i).split(" ");
             if(splitRule.length != 1) {
             	String nutrientType = splitRule[0].toLowerCase();
             	String comparator = splitRule[1];
             	Double value = Double.parseDouble(splitRule[2]);
+            	String userInput = rules.get(i);
             	BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
-            	tempCurrentList = nutrientTree.rangeSearch(value, comparator);
+            	FoodQuery currentQuery = new FoodQuery(userInput, nutrientTree);
+            	tempCurrentList = currentQuery.returnQuery();
             	tempList.add(tempCurrentList);
             }
         } // for
         List<Food> finalList = new ArrayList<Food>();
-        finalList.addAll(tempList.get(0));
+        if(tempList.size() != 0) {
+        	finalList.addAll(tempList.get(0));
+        }
         for (ListIterator<List<Food>> iter = tempList.listIterator(0); iter.hasNext(); ) {
             finalList.retainAll(iter.next());
         }
