@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -105,9 +106,22 @@ public class FoodQuery {
 		results.retainAll(prior);
 		return results;
 	}
-
 	
-	public static void main(String[] args) {
+	List substringQuery (String substring) {
+		List results = new ArrayList<Food>();
+		String currentFood = new String();
+		for(int i = 0; i < returnList.size(); i++) {
+			currentFood = returnList.get(i).getName();
+			if(currentFood.contains(substring)) {
+				results.add(returnList.get(i));
+			}
+		}
+		
+		return results;
+	}
+ 
+	
+	/*public static void main(String[] args) {
 		BPTree<Double, Food> calorieTree = new BPTree<>(3);
 		Food egg = new Food("123", "Egg", 100.0, 20.0, 25.0, 10.0, 5.0);
 		Food sugar = new Food("124", "Sugar cube", 5.0, 20.0, 25.0, 10.0, 5.0);
@@ -117,9 +131,10 @@ public class FoodQuery {
 		calorieTree.insert(sugar.getCalories(), sugar);
 		calorieTree.insert(bacon.getCalories(), bacon);
 		calorieTree.insert(coffee.getCalories(), coffee);
-		FoodQuery calorieQuery = new FoodQuery("calories <= 50", calorieTree);
+		FoodQuery calorieQuery = new FoodQuery("calories <= 1000", calorieTree);
 		System.out.println(calorieQuery.returnQuery());
+		System.out.println(calorieQuery.substringQuery("Egg"));
 
-	} // Main()
+	}*/ // Main()
 
 } // class FoodQuery
