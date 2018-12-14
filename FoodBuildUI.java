@@ -1,5 +1,4 @@
-//package cs400;
-
+package application;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,14 +61,15 @@ import javafx.scene.layout.VBox;
 
 /*
  * UI javaFX class of the Meal Helper program
+ * Creates a the UI of a meal/food planning and creating program upon running
+ * @author Trevor Dinsmoor (dinsmoor@wisc.edu)
+ * @author Jie Gu (jgu68@wisc.edu)
  */
 public class FoodBuildUI extends Application {
-	
+	// variables that persist and must be created here
 	static ObservableList<String> names = FXCollections.observableArrayList();
 	public ArrayList<Meal> mealsList = new ArrayList<Meal>(); // list of meals that is only populated while program is running
 	public ArrayList<String> filtersList = new ArrayList<String>(); // list of filters currently active
-	
-	// TODO - Should these go here?    
 	// for storing new food's values
     String nfoodName;
     String nfoodID;
@@ -79,6 +79,11 @@ public class FoodBuildUI extends Application {
     Double nfoodfiber;
     Double nfoodprotein;
 	
+    /*
+     * sorts the items in the meal list so they're always displayed alphabetically by name
+     * @param mealList - the list of meals
+     * @return mealList - sorted list of meals
+     */
     private ArrayList<Meal> sortMeals(ArrayList<Meal> mealList){
 		mealList.sort(new Comparator<Meal>() { // anonymous class
     		@Override
@@ -97,35 +102,38 @@ public class FoodBuildUI extends Application {
 		return mealList;
 	} // sortMeals()
     
-    
+    /*
+     * (non-Javadoc)
+     * @see javafx.application.Application#start(javafx.stage.Stage)
+     */
 	@Override
 	public void start(Stage primaryStage) {
 		// set title of the window that opens
 		primaryStage.setTitle("Food Helper");
-		primaryStage.show();	
+		primaryStage.show();
 		
-		// instantiate other classes that are needed at startup -------------------------------
+		// instantiate other classes that are needed at startup
 		// FoodData - the list of food
 	    FoodData foodList = new FoodData();
 		// establish initial borderPane layout
 		BorderPane border = new BorderPane();
-		// create borderPane sections
 		
+		
+		// create borderPane sections to be used throughout this class
 		// top section 
 		HBox headingbox = new HBox();
-	    //headingbox.setPadding(new Insets(10, 120, 10, 100));
-	    headingbox.setPadding(new Insets(10));
+	    headingbox.setPadding(new Insets(5));
 	    headingbox.setSpacing(10);
 	    headingbox.setStyle("-fx-background-color: #4527A0;");
 	    // left section 
 	    VBox foodBox = new VBox();
-	    foodBox.setPadding(new Insets (10, 70, 10, 70));
-	    foodBox.setSpacing(10);
+	    foodBox.setPadding(new Insets (5, 30, 5, 30));
+	    foodBox.setSpacing(5);
 	    foodBox.setStyle("-fx-background-color: #B39DDB;");
 	    // right section
 	    VBox mealBox = new VBox();
-	    mealBox.setPadding(new Insets (10, 70, 10, 70));
-	    mealBox.setSpacing(10);
+	    mealBox.setPadding(new Insets (5, 30, 5, 30));
+	    mealBox.setSpacing(5);
 	    mealBox.setStyle("-fx-background-color: #B39DDB;");
 		
 	    // top section content  --------------------------------------------------------------------------------------------------------------
@@ -139,14 +147,13 @@ public class FoodBuildUI extends Application {
 	    
 	    // left section - food list  --------------------------------------------------------------------------------------------------------------
 	    ObservableList<Food> food = FXCollections.observableArrayList();
-	    // title label
-	    Label foodLabel = new Label();
-	    foodLabel.setText("Food");
+	    
+	    Label foodLabel = new Label("Food"); // title label
 	    foodLabel.setPadding(new Insets(5));
 	    foodLabel.setFont(Font.font("Cambria", 16));
-	    // food view
+	    // food view that displays list of food
 	    ListView<Food> foodView = new ListView<Food>(food);
-	    foodView.setPrefSize(400, 260);
+	    foodView.setPrefSize(400, 190);
 	    // use to store object but display food's name
 	    foodView.setCellFactory(param -> new ListCell<Food>() {
 	    	@Override
@@ -160,15 +167,13 @@ public class FoodBuildUI extends Application {
 	    		}
 	    	}		
 		} ); // food view display cellFactory
-	  //foodView.getSelectionModel().selectedItemProperty().addListener(
+	    // when clicking on a food item, display its nutritional content in a window
         foodView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent click) {
-
                 if (click.getClickCount() == 2) {
                    //Use ListView's getSelected Item
-                   Food currentItemSelected = foodView.getSelectionModel()
-                                                            .getSelectedItem();
+                   Food currentItemSelected = foodView.getSelectionModel().getSelectedItem();
                    //use this to do whatever you want to. Open Link etc.
                    GridPane foodCheck = new GridPane();
                    foodCheck.setPadding(new Insets(10, 10, 10, 10));
@@ -203,18 +208,16 @@ public class FoodBuildUI extends Application {
                    CheckFood.setY(primaryStage.getY() + 350);
     
                    CheckFood.show();
-                   okay.setOnAction(new EventHandler<ActionEvent>() {
-                        
+                   okay.setOnAction(new EventHandler<ActionEvent>() {                        
                        @Override
                        public void handle(ActionEvent event) {
                            CheckFood.close();
                        }
-                   });
-                   System.out.println(currentItemSelected.getName());
+                   }); // okay's action
                 }
-                
-            }
+            } // handle method for mouse click
         }); // foodView set on mouse click
+        
 	    // filtering -------------------------------------------------------------
 	    // label for food name field
 	    Label foodFilterLabel = new Label("Filter by food name");
@@ -235,18 +238,17 @@ public class FoodBuildUI extends Application {
 	    // clears all current search filters, so full food list is displayed
 	    Button clearFilters = new Button("Clear Search Filters");
 	    clearFilters.setPrefSize(120, 20);
-
 	    // list of currently active filters
 	    ObservableList<String> currentFilterList = FXCollections.observableArrayList();
-	    currentFilterList.addAll(filtersList);
+	    currentFilterList.addAll(filtersList); // add from the instance variable containing filter strings to display
 	    // filter label
 	    Label filterLabel = new Label("Current Search Filters:");
 	    filterLabel.setPadding(new Insets(2));
 	    // filter view
 	    ListView<String> filterView = new ListView<String>(currentFilterList);
 	    filterView.setPrefSize(400, 80);
-	    
 	    // end of filtering -------------------------------------------------------------
+	    
 	    // create food button
 	    Button createFood = new Button("Create Food");
 	    createFood.setPrefSize(120, 20);// create food button
@@ -262,7 +264,7 @@ public class FoodBuildUI extends Application {
                 Label fatLabel = new Label("Fat:");
                 Label fiberLabel = new Label("Fiber:");
                 Label proteinLabel = new Label("Protein:");
- 
+                // pane for the popup window
                 GridPane addFoodLayout = new GridPane();
                 addFoodLayout.setPadding(new Insets(10, 10, 10, 10));
                 addFoodLayout.setVgap(5);
@@ -275,101 +277,74 @@ public class FoodBuildUI extends Application {
                 TextField fiber = new TextField();
                 TextField protein = new TextField();
                 DecimalFormat format = new DecimalFormat( "#.0" );
+                // for validating the text that is entered in the fields
                 calories.setTextFormatter( new TextFormatter<>(c ->
                 {
-                    if ( c.getControlNewText().isEmpty() )
-                    {
+                    if ( c.getControlNewText().isEmpty() ) {
                         return c;
                     }
-
                     ParsePosition parsePosition = new ParsePosition( 0 );
                     Object object = format.parse( c.getControlNewText(), parsePosition );
-
-                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-                    {
+                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ) {
                         return null;
                     }
-                    else
-                    {
+                    else {
                         return c;
                     }
-                }));
-                carbs.setTextFormatter( new TextFormatter<>(c ->
-                {
-                    if ( c.getControlNewText().isEmpty() )
-                    {
+                })); // calories text formatter
+                carbs.setTextFormatter( new TextFormatter<>(c -> {
+                    if ( c.getControlNewText().isEmpty() ) {
                         return c;
                     }
-
                     ParsePosition parsePosition = new ParsePosition( 0 );
                     Object object = format.parse( c.getControlNewText(), parsePosition );
-
-                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-                    {
+                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ) {
                         return null;
                     }
-                    else
-                    {
+                    else {
                         return c;
                     }
-                }));
-                fat.setTextFormatter( new TextFormatter<>(c ->
-                {
-                    if ( c.getControlNewText().isEmpty() )
-                    {
+                })); // carbs text formatter
+                fat.setTextFormatter( new TextFormatter<>(c -> {
+                    if ( c.getControlNewText().isEmpty() ) {
                         return c;
                     }
-
                     ParsePosition parsePosition = new ParsePosition( 0 );
                     Object object = format.parse( c.getControlNewText(), parsePosition );
-
-                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-                    {
+                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ) {
                         return null;
                     }
-                    else
-                    {
+                    else {
                         return c;
                     }
-                }));
-                fiber.setTextFormatter( new TextFormatter<>(c ->
-                {
-                    if ( c.getControlNewText().isEmpty() )
-                    {
+                })); // fat text formatter
+                fiber.setTextFormatter( new TextFormatter<>(c -> {
+                    if ( c.getControlNewText().isEmpty() ) {
                         return c;
                     }
-
                     ParsePosition parsePosition = new ParsePosition( 0 );
                     Object object = format.parse( c.getControlNewText(), parsePosition );
-
-                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-                    {
+                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ) {
                         return null;
                     }
-                    else
-                    {
+                    else {
                         return c;
                     }
-                }));
-                protein.setTextFormatter( new TextFormatter<>(c ->
-                {
-                    if ( c.getControlNewText().isEmpty() )
-                    {
+                })); // fiber text formatter
+                protein.setTextFormatter( new TextFormatter<>(c -> {
+                    if ( c.getControlNewText().isEmpty() ) {
                         return c;
                     }
-
                     ParsePosition parsePosition = new ParsePosition( 0 );
                     Object object = format.parse( c.getControlNewText(), parsePosition );
-
-                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() )
-                    {
+                    if ( object == null || parsePosition.getIndex() < c.getControlNewText().length() ) {
                         return null;
                     }
-                    else
-                    {
+                    else {
                         return c;
                     }
-                }));
+                })); // protein text formatter
+                // buttons for creating/canceling the new food item within the window prompting for its nutritional info
                 Button generateFood = new Button("Create Food!");
                 generateFood.setPrefSize(230, 20);
                 Button cancelFood = new Button("Cancel");
@@ -391,23 +366,19 @@ public class FoodBuildUI extends Application {
                 addFoodLayout.add(generateFood, 0, 7,2,1);
                 addFoodLayout.add(cancelFood, 0, 8,2,1);
                 Scene CrFoodScene = new Scene(addFoodLayout, 285, 290);
- 
                 // New window (Stage)
                 Stage CrFood = new Stage();
                 CrFood.setTitle("Add Food");
                 CrFood.setScene(CrFoodScene);
- 
                 // Set position of second window, related to primary window.
                 CrFood.setX(primaryStage.getX() + 700);
                 CrFood.setY(primaryStage.getY() + 350);
- 
                 CrFood.show();
-                
+                // action button for proceeding with new food item
                 generateFood.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        boolean invalid = false;
-                        
+                        boolean invalid = false;  
                         nfoodName=name.getText();
                         nfoodID = ID.getText();
                         String tempfoodcalories = calories.getText();
@@ -452,6 +423,7 @@ public class FoodBuildUI extends Application {
                             invalid = true;
                         }
                         if (!invalid) {
+                        	// shows a verification window with the values you entered
                             GridPane verifyFoodLayout = new GridPane();
                             verifyFoodLayout.setPadding(new Insets(10, 10, 10, 10));
                             verifyFoodLayout.setVgap(5);
@@ -486,11 +458,10 @@ public class FoodBuildUI extends Application {
              
                             // Set position of second window, related to primary window.
                             VerifyFood.setX(primaryStage.getX() + 700);
-                            VerifyFood.setY(primaryStage.getY() + 350);
-             
+                            VerifyFood.setY(primaryStage.getY() + 350);        
                             VerifyFood.show();
-                            verify.setOnAction(new EventHandler<ActionEvent>() {
-                                 
+                            // finishes food creation and closes windows
+                            verify.setOnAction(new EventHandler<ActionEvent>() {    
                                 @Override
                                 public void handle(ActionEvent event) {
                                     Food newFood = new Food(nfoodID,nfoodName,nfoodcalories,nfoodfat,nfoodcarbs,nfoodfiber,nfoodprotein);
@@ -499,27 +470,26 @@ public class FoodBuildUI extends Application {
                                     VerifyFood.close();
                                     CrFood.close();
                                 }
-                            });
+                            }); // action for verify button
+                            // cancels food creation and closes verify window
                             cancel.setOnAction(new EventHandler<ActionEvent>() {
-                                
                                 @Override
                                 public void handle(ActionEvent event) {
                                     VerifyFood.close();
                                 }
-                            });   
-                        }
-                        else {
+                            }); // cancel button action 
+                        } // if it's valid
+                        
+                        else { // otherwise not valid
                             Alert alert = new Alert(AlertType.ERROR);
                             alert.setTitle("Error");
                             alert.setHeaderText("Missing Food Data or Incorrect Food Data!");
-                            //alert.setContentText("Ooops, there was an error!");
-
                             alert.showAndWait();
-                        }
+                        } // else
                     }
-                });
+                }); // generate food button action
+                // stop creating this food item button
                 cancelFood.setOnAction(new EventHandler<ActionEvent>() {
-                     
                     @Override
                     public void handle(ActionEvent event) {
                         CrFood.close();
@@ -534,11 +504,11 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
 	    		String userToRule = "name == " + userInput;
-                currentFilterList.clear();
+                currentFilterList.clear(); // clear old view
 	    		food.clear();
-                filtersList.add(userToRule);
-	    		currentFilterList.addAll(filtersList);
-	    		food.addAll(foodList.filterByName(userInput));	
+                filtersList.add(userToRule); // add new filter input to the list
+	    		currentFilterList.addAll(filtersList); // add all filters to the displayed view
+	    		food.addAll(foodList.filterByName(userToRule));	
 	    		foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    		foodNameSearch.clear();
@@ -550,44 +520,44 @@ public class FoodBuildUI extends Application {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		String userInput = nutrientSearch.getText();
-                currentFilterList.clear();
+                currentFilterList.clear(); // clear old view
                 food.clear();
-                filtersList.add(userInput);
-                currentFilterList.addAll(filtersList);  
+                filtersList.add(userInput); // add new filter input to the list
+                currentFilterList.addAll(filtersList); // add all filters to the displayed view
                 food.addAll(foodList.filterByNutrients(filtersList));
                 foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
 	    		foodBox.getChildren().addAll(filterLabel, filterView, clearFilters);
 	    		nutrientSearch.clear();
 	    	}
-	    }); // action for runNutrientQuery button	    
+	    }); // action for runNutrientQuery button	
+	    
 	    // clearFilters button action
 	    clearFilters.setOnAction(new EventHandler<ActionEvent>() {  
             @Override
             public void handle(ActionEvent event) {
-            	food.clear();
-            	food.addAll(foodList.getAllFoods());
-            	//currentFilterList.clear();
-            	filtersList.clear();
+            	food.clear(); // empty the list
+            	food.addAll(foodList.getAllFoods());  
+            	currentFilterList.clear();
+            	filtersList.clear(); // clear displayed list of filters
             	foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
             }
 	    } ); // clear filters button action
         
-	    // add all foodBox (left pane)
+	    // add most items to the foodBox (left pane)
 	    foodBox.getChildren().addAll(foodLabel, foodView, createFood, foodFilterLabel,
 	    		foodNameSearch, runFoodQuery, nutrientFilterLabel, nutrientSearch,
 	    		runNutrientQuery);
 	    // end of left food section ---------------------------------------------------------------------------------------------------------------
 
 	    // right section - meal list  --------------------------------------------------------------------------------------------------------------
-	    Label mealLabel = new Label();
-	    mealLabel.setText("Meals");
+	    Label mealLabel = new Label("Meals");
 	    mealLabel.setPadding(new Insets(5));
 	    mealLabel.setFont(Font.font("Cambria", 16));
 	    // list of meals
 	    ObservableList<Meal> meals = FXCollections.observableArrayList();
 	    meals.addAll(sortMeals(mealsList)); // add from the list variable of this class
 	    ListView<Meal> mealView = new ListView<Meal>(meals);
-	    mealView.setPrefSize(400, 260);
+	    mealView.setPrefSize(400, 190);
 	    // use to store object but display meal's name
 	    mealView.setCellFactory(param -> new ListCell<Meal>() {
 	    	@Override
@@ -601,16 +571,17 @@ public class FoodBuildUI extends Application {
 	    		}
 	    	}
 		} ); // cell factory for displaying meals well
+	    
 	    // middle section for results to be displayed  -------------------------------------------------------------------------------------------------
 	    VBox middle = new VBox();
 	    middle.setPadding(new Insets(10));
 	    middle.setSpacing(10);
 	    middle.setStyle("-fx-background-color: #B39DDB;");
 	    
-	    
 	    // new createMeal button
 	    Button createMeal = new Button("Create Meal");
 	    createMeal.setPrefSize(120, 20);
+	    // action for the create meal button. Causes a popup window to add foods to the meal 
 	    createMeal.setOnAction(new EventHandler<ActionEvent>() {  
             @Override
             public void handle(ActionEvent event) {
@@ -627,6 +598,7 @@ public class FoodBuildUI extends Application {
 	            ListView<Food> foodListView = new ListView<Food>(tempFoodList);
 	            tempFoodList.addAll(foodList.getAllFoods());
 	            foodListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // allow multiple selection
+	            // displays the food names intead of their object references
 	            foodListView.setCellFactory(param -> new ListCell<Food>() {
 	    	    	@Override
 	    	    	protected void updateItem(Food item, boolean empty) {
@@ -639,6 +611,7 @@ public class FoodBuildUI extends Application {
 	    	    		}
 	    	    	}	
 	    		} ); // cell factory for displaying food well
+	            
 	    		// button for creating the meal and closing the window
                 Button generateMeal = new Button("Create Meal");
                 generateMeal.setPadding(new Insets(10));
@@ -655,7 +628,7 @@ public class FoodBuildUI extends Application {
                 CrMeal.setY(primaryStage.getY() + 280);
                 CrMeal.show();
                 
-                // generateMeal button action
+                // generateMeal button action to create meal object and close the window
                 generateMeal.setPrefSize(120, 20);
                 generateMeal.setOnAction(new EventHandler<ActionEvent>() {
                 	@Override
@@ -674,6 +647,7 @@ public class FoodBuildUI extends Application {
 	    // Edit Selected Meal button
 	    Button editMeal = new Button("Edit Selected");
         editMeal.setPrefSize(120, 20);
+        // edit button action to open a window for adding/removing foods
 	    editMeal.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
             public void handle(ActionEvent event) {
@@ -686,6 +660,7 @@ public class FoodBuildUI extends Application {
 	            ListView<Food> curListView = new ListView<Food>(curFoodList);
 	            curListView.setPadding(new Insets(10));
 	            curListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // allow multiple selection
+	            // displays food names instead of object references
 	            curListView.setCellFactory(param -> new ListCell<Food>() {
 	    	    	@Override
 	    	    	protected void updateItem(Food item, boolean empty) {
@@ -716,6 +691,7 @@ public class FoodBuildUI extends Application {
 	            tempFoodList.addAll(foodList.getAllFoods());
 	            foodListView.setPadding(new Insets(10));
 	            foodListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE); // allow multiple selection
+	            // displays food names instead of food object references
 	            foodListView.setCellFactory(param -> new ListCell<Food>() {
 	    	    	@Override
 	    	    	protected void updateItem(Food item, boolean empty) {
@@ -728,6 +704,7 @@ public class FoodBuildUI extends Application {
 	    	    		}
 	    	    	}	
 	    		} ); // cell factory for displaying food well
+	            
 	            // button for adding more foods to meal
 	            Button add = new Button("Add Foods");
 	            add.setPrefSize(100, 20);
@@ -761,18 +738,17 @@ public class FoodBuildUI extends Application {
 	    	    		middle.getChildren().clear();
 	            		editFoods.close();
 	            	}
-	            } );
+	            } ); // action for add button
 	    	}
 	    } ); // edit selected meal button action
 	    
 	    // buttons that will be defined more below
 	    Button showIngredients = new Button();
 	    Button analyzeMeal = new Button();
-	    // meal/right section
+	    // meal - right section. add all constant items to it
 	    mealBox.getChildren().addAll(mealLabel, mealView, createMeal, editMeal, analyzeMeal, showIngredients);
 	    // end of right meals section ------------------------------------------------------------------------------------------------------------------
-	    
-	    
+	       
 	    // middle section main content ------------------------------------------------------------
 	    // for displaying the selected meals' ingredients
 	    Label mealIngredientsDisplay = new Label();
@@ -782,7 +758,6 @@ public class FoodBuildUI extends Application {
 	    // list of currently selected meals' ingredients
 	    ObservableList<Food> ingredients = FXCollections.observableArrayList();
 	    ListView<Food> ingredientView = new ListView<Food>(ingredients);
-	    //ingredientView.setPrefSize(400, 300);
 	    // use to store object but display food's name
 	    ingredientView.setCellFactory(param -> new ListCell<Food>() {
 	    	@Override
@@ -809,12 +784,13 @@ public class FoodBuildUI extends Application {
 	    	    middle.getChildren().addAll(mealIngredientsDisplay, ingredientView);
 	    	};
 	    } ); // showIngredients button action
-	    // list and listview to display current meal's nutitritional information
+	    // list and listview to display current meal's nutritional information
     	ObservableList<String> nutritionList = FXCollections.observableArrayList();
 	    ListView<String> nutritionView = new ListView<String>(nutritionList);   
 	    // analyze meal button
 	    analyzeMeal.setText("Analyze Meal");
 	    analyzeMeal.setPrefSize(120, 20);
+	    // analyze meal button action to display meal's nutritional info in center of the screen
 	    analyzeMeal.setOnAction(new EventHandler<ActionEvent>() {
 	    	public void handle(ActionEvent event) {
 	    		Meal curMeal = (Meal) mealView.getSelectionModel().getSelectedItem();
@@ -824,7 +800,7 @@ public class FoodBuildUI extends Application {
 	    		String carbsResult = "Carbs: " + nutritionArray[2];
 	    		String fiberResult = "Fiber: " + nutritionArray[3];
 	    		String proteinResult = "Protein: " + nutritionArray[4];
-	    		nutritionList.clear();
+	    		nutritionList.clear(); // clear any old values
 	    		nutritionList.addAll(calorieResult, fatResult, carbsResult, fiberResult, proteinResult);
 	    		ingredientView.setPrefSize(300, 300);
 	    		ingredientView.setEditable(false);
@@ -839,7 +815,7 @@ public class FoodBuildUI extends Application {
 	    
 	    // bottom section - exit button --------------------------------------------------------------------------------------------------------------
 	    HBox bottomMenu = new HBox();
-	    bottomMenu.setPadding(new Insets (10) );
+	    bottomMenu.setPadding(new Insets (5) );
 	    bottomMenu.setSpacing(10);
 	    bottomMenu.setStyle("-fx-background-color: #4527A0;");
 	    Button exitButton = new Button("Exit");
@@ -858,6 +834,8 @@ public class FoodBuildUI extends Application {
 	    // import foods from a file
 	    Button importButton = new Button("Import");
 	    importButton.setPrefSize(120, 20);
+	    // button action for importing a file of food items. parses the file and adds food items
+	    // with nutritional content filled out. This replaces any existing food list
 	    importButton.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
@@ -884,6 +862,7 @@ public class FoodBuildUI extends Application {
                 loadStage.show();
                 // doLoad button action
                 doLoad.setPrefSize(120, 20);
+                // action for running the load function once user has specified a file.
                 doLoad.setOnAction(new EventHandler<ActionEvent>() {
                 	@Override
                 	public void handle(ActionEvent event) {
@@ -896,9 +875,11 @@ public class FoodBuildUI extends Application {
                 } ); // doLoad button action
 	    	}
 	    } ); // importButton.setOnAction()
+	    
 	    // save foods to a file
 	    Button exportButton = new Button("Export");
 	    exportButton.setPrefSize(120, 20);
+	    // button action for saving the current food list to a csv file
 	    exportButton.setOnAction(new EventHandler<ActionEvent>() {
 	    	@Override
 	    	public void handle(ActionEvent event) {
@@ -925,6 +906,7 @@ public class FoodBuildUI extends Application {
                 saveStage.show();
                 // doSave button action
                 doSave.setPrefSize(120, 20);
+                // button action for actually saving the file after specifying a name for the file
                 doSave.setOnAction(new EventHandler<ActionEvent>() {
                 	@Override
                 	public void handle(ActionEvent event) {
@@ -936,10 +918,10 @@ public class FoodBuildUI extends Application {
                 } ); // doSave button action
 	    	}
 	    } ); // exportButton.setOnAction()
+	    
 	    // add buttons and title to the heading box
 	    headingbox.getChildren().addAll(programTitle, importButton, exportButton);	
 	    // end of extra top section pieces -----------------------------------------------------------------
-	    
 	    
 	    // add sections to borderPane
 		border.setTop(headingbox);
@@ -953,12 +935,12 @@ public class FoodBuildUI extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	} // start()
-
-	public static void main(String[] args) {
-		
-		launch(args);
-		
-	} // Main()
 	
+	/*
+	 * launches the program
+	 */
+	public static void main(String[] args) {
+		launch(args);		
+	} // Main()	
 	
 } // FoodBuildUI class
