@@ -181,12 +181,16 @@ public class FoodData implements FoodDataADT<Food> {
             if(splitRule.length != 1) {
             	String nutrientType = splitRule[0].toLowerCase();
             	String comparator = splitRule[1];
-            	if(!nutrientType.equals("name")) {
-            		Double value = Double.parseDouble(splitRule[2]);
-            	}
-            	else {
+            	// if there's already a name filter
+            	if(nutrientType.equals("name")) {
             		String value = splitRule[2];
+            		String searchString = "calories >= 0.0";
+                	FoodQuery nameQuery = new FoodQuery(searchString, caloriesTree);
+                	tempCurrentList = nameQuery.substringQuery(value);
+                	tempList.add(tempCurrentList);
+                	continue;
             	}
+            	
             	String userInput = rules.get(i);
             	BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
             	FoodQuery currentQuery = new FoodQuery(userInput, nutrientTree);
