@@ -1,3 +1,5 @@
+package application;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -12,10 +14,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * This class represents the backend for managing all 
- * the operations associated with Foods
+ * This class represents the back end for managing all 
+ * the operations associated with Food items stored in trees.
+ * It connects the UI to the BP trees that actually store the food items
  * 
  * @author sapan (sapan@cs.wisc.edu)
+ * @author Trevor Dinsmoor (dinsmoor@wisc.edu)
+ * @author Jie Gu (jgu68@wisc.edu)
  */
 public class FoodData implements FoodDataADT<Food> {
 	// instance variables
@@ -42,7 +47,7 @@ public class FoodData implements FoodDataADT<Food> {
     	indexes = new HashMap<String, BPTree<Double, Food>>();
     	// BPTrees
     	nameTree = new BPTree<String,Food>(3);
-    	// calory tree
+    	// calorie tree
     	caloriesTree = new BPTree<Double,Food>(3);
     	// carbohydrate tree
     	carbohydrateTree = new BPTree<Double,Food>(3);
@@ -144,10 +149,21 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByName(String substring) {
-    	String searchString = "calories >= 0.0";
-    	FoodQuery currentQuery = new FoodQuery(searchString, caloriesTree);
+    	List<Food> finalList = new ArrayList<Food>();
+    	String inputBreakdown [] = substring.split(" ");
+    	if(inputBreakdown.length == 2) {
+    		return finalList;
+    	}
+    	else {
+    		substring = inputBreakdown [2];
+    	}
+    	
+    	String searchString = "calories >= 0.0"; // string to pass to return all results, initially
 
-    	List<Food> finalList = currentQuery.substringQuery(substring);
+    	// instantiates a FoodQuery object to perform searching
+    	FoodQuery currentQuery = new FoodQuery(searchString, caloriesTree);
+    	finalList = currentQuery.substringQuery(substring); // actually filters by name
+    	// sort alphabetically
         finalList.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
@@ -171,11 +187,10 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByNutrients(List<String> rules) {
-    	
         int numRules = rules.size();
         ArrayList<List<Food>> tempList = new ArrayList<List<Food>>();
         List<Food> tempCurrentList = new ArrayList<Food>();
-
+        // loop through list of rules in effect
         for (int i = 0; i < numRules; i++) {
             String [] splitRule = rules.get(i).split(" ");
             if(splitRule.length != 1) {
@@ -190,11 +205,11 @@ public class FoodData implements FoodDataADT<Food> {
                 	tempList.add(tempCurrentList);
                 	continue;
             	}
-            	
             	String userInput = rules.get(i);
             	BPTree<Double, Food> nutrientTree = indexes.get(nutrientType);
+            	// instantiates a FoodQuery object to perform searching
             	FoodQuery currentQuery = new FoodQuery(userInput, nutrientTree);
-            	tempCurrentList = currentQuery.returnQuery();
+            	tempCurrentList = currentQuery.returnQuery(); // gets the results from the query object
             	tempList.add(tempCurrentList);
             }
         } // for
@@ -205,7 +220,7 @@ public class FoodData implements FoodDataADT<Food> {
         for (ListIterator<List<Food>> iter = tempList.listIterator(0); iter.hasNext(); ) {
             finalList.retainAll(iter.next());
         }
-        // sort list to return
+        // sort list alphabetically before returning
         finalList.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
@@ -229,7 +244,6 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public void addFood(Food food) {
-    	//foodList.add(food);
 		// adding to trees
     	String name = food.getName();
     	Double calories = food.getCalories();
@@ -252,7 +266,10 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> getAllFoods() {
-    	List<Food> foods = caloriesTree.rangeSearch(0.0, ">=");
+    	// initial display of all food items without filters by searching on
+    	// calories greater than or equal to 0.
+    	List<Food> foods = caloriesTree.rangeSearch(0.0, ">="); 
+    	// sorts foods alphabetically
     	foods.sort(new Comparator<Food>() { // anonymous class
     		@Override
     		public int compare(Food food1,Food food2) {
@@ -267,10 +284,13 @@ public class FoodData implements FoodDataADT<Food> {
     			}
     		} // compare() overridden	
     	}); // end of anonymous inner class
-    	
     	return foods;
     } // getAllFoods()
 
+    /*
+     * (non-Javadoc)
+     * @see application.FoodDataADT#saveFoods(java.lang.String)
+     */
 	@Override
 	public void saveFoods(String filename) {
 		File saveFile = null;
@@ -303,13 +323,5 @@ public class FoodData implements FoodDataADT<Food> {
 			}
 		} // finally		
 	} // saveFoods()
-	
-	/*
-	 * main method for testing
-	 */
-	public static void main(String[] args) {
-
-		
-	} // Main()
 	
 } // class FoodData
