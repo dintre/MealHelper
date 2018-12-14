@@ -1,5 +1,4 @@
 package application;
-//package application;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,6 +18,7 @@ import java.util.Random;
  * linear in-order traversals of the data items.
  * 
  * @author sapan (sapan@cs.wisc.edu)
+ * @author Libby Maese (libby@cs.wisc.edu)
  *
  * @param <K> key - expect a string that is the type of id for each item
  * @param <V> value - expect a user-defined type that stores all data for a food item
@@ -847,92 +847,4 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         }
     } // End of class LeafNode
     
-    
-    /**
-     * Contains a basic test scenario for a BPTree instance.
-     * It shows a simple example of the use of this class
-     * and its related types.
-     * 
-     * @param args
-     */
-  /*  public static void main(String[] args) {
-        // create empty BPTree with branching factor of 3
-        BPTree<Double, Double> bpTree = new BPTree<>(3);
-
-        // create a pseudo random number generator
-        Random rnd1 = new Random();
-
-        // some value to add to the BPTree
-        Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
-        BPTree<String, Integer> calorieTree = new BPTree<>(3);
-        calorieTree.insert("Egg", 80);
-        calorieTree.insert("Soy", 100);
-        calorieTree.insert("Milk", 150);
-        calorieTree.insert("Eggo", 200);
-        calorieTree.insert("Egg", 80);
-        bpTree.insert(0.3d, 0.1d);
-        bpTree.insert(0.2d, 0.2d);
-        bpTree.insert(0.3d, 0.3d);
-       bpTree.insert(0.5d, 0.4d);
-      bpTree.insert(0.3d, 0.5d);
-      bpTree.insert(0.3d, 0.6d);
-   bpTree.insert(0.1d, 0.7d);
-        bpTree.insert(0.3d, 0.8d);
-       bpTree.insert(0.6d, 0.9d);
-       bpTree.insert(1.0d, 1.0d);
-       bpTree.insert(0.03d, 1.1d);
-   //     bpTree.insert(0.21d, 1.2d);
-   //    bpTree.insert(0.21d, 1.3d);*/
-      //  BPTree<Integer, String> calorieTree = new BPTree<>(3);
-
-      /*  calorieTree.insert(80, "Egg");
-        calorieTree.insert(100, "Soy");
-        calorieTree.insert(288, "Milk");
-   //     calorieTree.insert(150, "Eggo");
-        calorieTree.insert(80, "Egg");
-        calorieTree.insert(100, "Soy");
-        calorieTree.insert(288, "Milk"); //search error here
-    //    calorieTree.insert(150, "Eggo");
-        calorieTree.insert(80, "Egg");
-        calorieTree.insert(100, "Soy");
-        calorieTree.insert(288, "Milk");
-    //    calorieTree.insert(150, "Eggo");
-        calorieTree.insert(80, "Egg");
-       calorieTree.insert(100, "Soy");
-     //   calorieTree.insert(288, "Milk");
-        calorieTree.insert(150, "Eggo");
-    //    calorieTree.insert(80, "Egg");
-        calorieTree.insert(22, "Red Win Vinegar");
-    //    calorieTree.insert(288, "Yogurt");
-   //     calorieTree.insert(150, "Eggo");
-   //     calorieTree.insert(32, "Chip");
-  //      calorieTree.insert(231, "Candy");
-     //   calorieTree.insert(100, "Soy Milk");
-       // calorieTree.insert(130, "Bread");
-    //    calorieTree.insert(830, "Pizza");
-       // calorieTree.insert(1538, "Lasagna");
-    //    calorieTree.insert(153, "Chicken");
-        
-       System.out.println("\n\nTree structure:\n" + calorieTree.toString());
-        System.out.println(calorieTree.rangeSearch("", ">="));
-        //System.out.println(calorieTree.rangeSearch(100, ">="));
-}*/
-
-        // build an ArrayList of those value and add to BPTree also
-        // allows for comparing the contents of the ArrayList 
-        // against the contents and functionality of the BPTree
-        // does not ensure BPTree is implemented correctly
-        // just that it functions as a data structure with
-        // insert, rangeSearch, and toString() working.
-       /* List<Double> list = new ArrayList<>();
-        for (int i = 0; i < 400; i++) {
-            Double j = dd[rnd1.nextInt(4)];
-            list.add(j);
-            bpTree.insert(j, j);
-            System.out.println("\n\nTree structure:\n" + bpTree.toString());
-        }
-        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
-        System.out.println("Filtered values: " + filteredValues.toString());
-    }
-    }*/
 } // End of class BPTree
