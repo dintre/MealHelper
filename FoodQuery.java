@@ -1,3 +1,4 @@
+package application;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,11 +78,12 @@ public class FoodQuery {
 		
 		else if(category.equals("name")) {
 			tree = inputTree;
-			returnList = tree.rangeSearch(query[2],comparator);
+			returnList = tree.rangeSearch("",comparator);
+			returnList = this.substringQuery(query[2]);
 		}
 		
 		else {
-			throw new IllegalArgumentException("Query must be on calories, protein, fiber, carbs, fat, or name.");
+			throw new IllegalArgumentException("Query must be on protein, fiber, carbs, fat, or name.");
 		}
 		
     }

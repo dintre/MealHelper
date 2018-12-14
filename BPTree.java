@@ -1,3 +1,4 @@
+package application;
 //package application;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -536,8 +537,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		// checks the next key and returns blank if it doesn't exist
         		if(foundNode.keys.get(findPoint).compareTo(key) < 0) {
         			findPoint++;
-        			if((foundNode.keys.get(findPoint).compareTo(key) < 0) && 
-        					findPoint > this.keys.size()-1) {
+        			if((findPoint > this.keys.size()-1 ||
+        					foundNode.keys.get(findPoint).compareTo(key) < 0)) {
         				if(foundNode.next == null) {
         					return returnList;
         				}
@@ -785,14 +786,14 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         		//and returns blank if it doesn't exist
         		if(foundNode.keys.get(findPoint).compareTo(key) > 0) {
         			findPoint--;
-        			if((foundNode.keys.get(findPoint).compareTo(key) > 0) && findPoint >= 0) {
-        				if(foundNode.next == null) {
+        			if((findPoint < 0 || foundNode.keys.get(findPoint).compareTo(key) > 0)) {
+        				if(foundNode.previous == null) {
         					return returnList;
         				}
         				
         				else {
                 			
-            				foundNode = foundNode.next;
+            				foundNode = foundNode.previous;
             				findPoint = foundNode.keys.size()-1;
             				}
         			}
@@ -854,7 +855,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * 
      * @param args
      */
-   /* public static void main(String[] args) {
+ /*   public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
 
@@ -863,8 +864,12 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 
         // some value to add to the BPTree
         Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
-        
-       /* bpTree.insert(0.3d, 0.1d);
+        BPTree<String, Integer> calorieTree = new BPTree<>(3);
+        calorieTree.insert("Egg", 80);
+        calorieTree.insert("Soy", 100);
+        calorieTree.insert("Milk", 150);
+        calorieTree.insert("Eggo", 200);
+      /*  bpTree.insert(0.3d, 0.1d);
         bpTree.insert(0.2d, 0.2d);
         bpTree.insert(0.3d, 0.3d);
        bpTree.insert(0.5d, 0.4d);
@@ -876,39 +881,40 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
        bpTree.insert(1.0d, 1.0d);
        bpTree.insert(0.03d, 1.1d);
    //     bpTree.insert(0.21d, 1.2d);
-   //    bpTree.insert(0.21d, 1.3d);
-        BPTree<Integer, String> calorieTree = new BPTree<>(3);
+   //    bpTree.insert(0.21d, 1.3d);*/
+      //  BPTree<Integer, String> calorieTree = new BPTree<>(3);
 
-        calorieTree.insert(80, "Egg");
+      /*  calorieTree.insert(80, "Egg");
         calorieTree.insert(100, "Soy");
         calorieTree.insert(288, "Milk");
-        calorieTree.insert(150, "Eggo");
+   //     calorieTree.insert(150, "Eggo");
         calorieTree.insert(80, "Egg");
         calorieTree.insert(100, "Soy");
         calorieTree.insert(288, "Milk"); //search error here
-        calorieTree.insert(150, "Eggo");
+    //    calorieTree.insert(150, "Eggo");
         calorieTree.insert(80, "Egg");
         calorieTree.insert(100, "Soy");
         calorieTree.insert(288, "Milk");
-        calorieTree.insert(150, "Eggo");
+    //    calorieTree.insert(150, "Eggo");
         calorieTree.insert(80, "Egg");
        calorieTree.insert(100, "Soy");
-        calorieTree.insert(288, "Milk");
+     //   calorieTree.insert(288, "Milk");
         calorieTree.insert(150, "Eggo");
-        calorieTree.insert(80, "Egg");
+    //    calorieTree.insert(80, "Egg");
         calorieTree.insert(22, "Red Win Vinegar");
-        calorieTree.insert(288, "Yogurt");
-        calorieTree.insert(150, "Eggo");
-        calorieTree.insert(32, "Chip");
-        calorieTree.insert(231, "Candy");
+    //    calorieTree.insert(288, "Yogurt");
+   //     calorieTree.insert(150, "Eggo");
+   //     calorieTree.insert(32, "Chip");
+  //      calorieTree.insert(231, "Candy");
      //   calorieTree.insert(100, "Soy Milk");
        // calorieTree.insert(130, "Bread");
     //    calorieTree.insert(830, "Pizza");
        // calorieTree.insert(1538, "Lasagna");
-    //    calorieTree.insert(153, "Chicken");
+    //    calorieTree.insert(153, "Chicken");*/
         
-        System.out.println("\n\nTree structure:\n" + calorieTree.toString());
-        System.out.println(calorieTree.rangeSearch(150, "<="));
+   /*     System.out.println("\n\nTree structure:\n" + calorieTree.toString());
+        System.out.println(calorieTree.rangeSearch("", ">="));
+        //System.out.println(calorieTree.rangeSearch(100, ">="));
 }*/
 
         // build an ArrayList of those value and add to BPTree also
