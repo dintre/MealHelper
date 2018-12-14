@@ -144,8 +144,8 @@ public class FoodData implements FoodDataADT<Food> {
      */
     @Override
     public List<Food> filterByName(String substring) {
-    	String searchString = "name == " + substring;
-    	FoodQuery currentQuery = new FoodQuery(searchString, nameTree);
+    	String searchString = "calories >= 0.0";
+    	FoodQuery currentQuery = new FoodQuery(searchString, caloriesTree);
 
     	List<Food> finalList = currentQuery.substringQuery(substring);
         finalList.sort(new Comparator<Food>() { // anonymous class

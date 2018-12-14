@@ -534,6 +534,12 @@ public class FoodBuildUI extends Application {
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
                 currentFilterList.clear();
+	    		
+	    		if(!filtersList.isEmpty()) {
+	    			List<Food> oldFoodList = food;
+	    			List<Food> tempFoodList = foodList.filterByName(userInput);
+	    			List<Food> newFoodList;
+	    		}
 	    		food.clear();
                 filtersList.add(userInput);
 	    		currentFilterList.addAll(filtersList);

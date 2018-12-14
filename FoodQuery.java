@@ -81,7 +81,7 @@ public class FoodQuery {
 		}
 		
 		else {
-			throw new IllegalArgumentException("Query must be on protein, fiber, carbs, fat, or name.");
+			throw new IllegalArgumentException("Query must be on calories, protein, fiber, carbs, fat, or name.");
 		}
 		
     }
