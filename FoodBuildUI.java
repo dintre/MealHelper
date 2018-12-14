@@ -533,15 +533,10 @@ public class FoodBuildUI extends Application {
 	    	@Override
 	    	public void handle(ActionEvent event) {
 	    		String userInput = foodNameSearch.getText();
+	    		String userToRule = "name == " + userInput;
                 currentFilterList.clear();
-	    		
-	    		if(!filtersList.isEmpty()) {
-	    			List<Food> oldFoodList = food;
-	    			List<Food> tempFoodList = foodList.filterByName(userInput);
-	    			List<Food> newFoodList;
-	    		}
 	    		food.clear();
-                filtersList.add(userInput);
+                filtersList.add(userToRule);
 	    		currentFilterList.addAll(filtersList);
 	    		food.addAll(foodList.filterByName(userInput));	
 	    		foodBox.getChildren().removeAll(filterLabel, filterView, clearFilters);
