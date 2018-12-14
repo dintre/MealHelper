@@ -1,4 +1,4 @@
-
+package application;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class FoodQuery {
 		
 		else if(category.equals("name")) {
 			tree = inputTree;
-			returnList = tree.rangeSearch("",comparator);
+			returnList = tree.rangeSearch("",">=");
 			returnList = this.substringQuery(query[2]);
 		}
 		
@@ -112,8 +112,9 @@ public class FoodQuery {
 	List substringQuery (String substring) {
 		List results = new ArrayList<Food>();
 		String currentFood = new String();
+		substring = substring.toLowerCase();
 		for(int i = 0; i < returnList.size(); i++) {
-			currentFood = returnList.get(i).getName();
+			currentFood = returnList.get(i).getName().toLowerCase();
 			if(currentFood.contains(substring)) {
 				results.add(returnList.get(i));
 			}
@@ -124,19 +125,27 @@ public class FoodQuery {
  
 	
 	/*public static void main(String[] args) {
-		BPTree<Double, Food> calorieTree = new BPTree<>(3);
+	//	BPTree<Double, Food> calorieTree = new BPTree<>(3);
 		Food egg = new Food("123", "Egg", 100.0, 20.0, 25.0, 10.0, 5.0);
 		Food sugar = new Food("124", "Sugar cube", 5.0, 20.0, 25.0, 10.0, 5.0);
 		Food bacon = new Food("126", "Bacon", 80.0, 20.0, 25.0, 10.0, 5.0);
 		Food coffee = new Food("125", "coffee", 10.0, 20.0, 25.0, 10.0, 5.0);
-		calorieTree.insert(egg.getCalories(), egg);
+		Food eggo = new Food("80", "Eggo", 80.0, 20.0, 25.0, 10.0, 5.0);
+	/*	calorieTree.insert(egg.getCalories(), egg);
 		calorieTree.insert(sugar.getCalories(), sugar);
 		calorieTree.insert(bacon.getCalories(), bacon);
-		calorieTree.insert(coffee.getCalories(), coffee);
+		calorieTree.insert(coffee.getCalories(), coffee);/*
 		FoodQuery calorieQuery = new FoodQuery("calories <= 1000", calorieTree);
 		System.out.println(calorieQuery.returnQuery());
 		System.out.println(calorieQuery.substringQuery("Egg"));
-
+		BPTree<String, Food> calorieTree = new BPTree<>(3);
+        calorieTree.insert("Egg", egg);
+        calorieTree.insert("Sugar", sugar);
+        calorieTree.insert("Bacon", bacon);
+        calorieTree.insert("Coffee", coffee);
+        calorieTree.insert("Eggo", eggo);
+        FoodQuery calorieQuery = new FoodQuery("name == eg", calorieTree);
+        System.out.println(calorieQuery.returnQuery());
 	}*/ // Main()
 
 } // class FoodQuery

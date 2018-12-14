@@ -1,3 +1,4 @@
+package application;
 //package application;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -645,7 +646,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         				
         				//checks the beginning of the next node for the key
         				if(findPoint >= keys.size()-1) {
-        					currentNode = currentNode.next;
+        					currentNode = foundNode.next;
         					if(currentNode != null) {
         						currentPoint = 0;
         						if(currentNode.keys.get(currentPoint).equals(key)) {
@@ -854,7 +855,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * 
      * @param args
      */
- /*   public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         // create empty BPTree with branching factor of 3
         BPTree<Double, Double> bpTree = new BPTree<>(3);
 
@@ -868,7 +869,8 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         calorieTree.insert("Soy", 100);
         calorieTree.insert("Milk", 150);
         calorieTree.insert("Eggo", 200);
-      /*  bpTree.insert(0.3d, 0.1d);
+        calorieTree.insert("Egg", 80);
+        bpTree.insert(0.3d, 0.1d);
         bpTree.insert(0.2d, 0.2d);
         bpTree.insert(0.3d, 0.3d);
        bpTree.insert(0.5d, 0.4d);
@@ -909,9 +911,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
        // calorieTree.insert(130, "Bread");
     //    calorieTree.insert(830, "Pizza");
        // calorieTree.insert(1538, "Lasagna");
-    //    calorieTree.insert(153, "Chicken");*/
+    //    calorieTree.insert(153, "Chicken");
         
-   /*     System.out.println("\n\nTree structure:\n" + calorieTree.toString());
+       System.out.println("\n\nTree structure:\n" + calorieTree.toString());
         System.out.println(calorieTree.rangeSearch("", ">="));
         //System.out.println(calorieTree.rangeSearch(100, ">="));
 }*/
