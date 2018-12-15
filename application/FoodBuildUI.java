@@ -757,8 +757,6 @@ public class FoodBuildUI extends Application {
                 String proteinResult = "Protein: " + nutritionArray[4];
                 nutritionList.clear(); // clear any old values
                 nutritionList.addAll(calorieResult, fatResult, carbsResult, fiberResult, proteinResult);
-                ingredientView.setPrefSize(300, 300);
-                ingredientView.setEditable(false);
                 Label nutritionTitle = new Label(curMeal.getName() + "'s Nutritional Content");
                 nutritionTitle.setFont(Font.font("Cambria", 16));
                 nutritionTitle.setPadding(new Insets(5));
